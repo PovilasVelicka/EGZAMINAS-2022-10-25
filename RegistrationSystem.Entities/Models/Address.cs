@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RegistrationSystem.Entities.Models
 {
@@ -11,10 +7,19 @@ namespace RegistrationSystem.Entities.Models
     public class Address
     {
         public int Id { get; set; }
+        [StringLength(150)]
         public string City { get; set; } = null!;
+        [StringLength(150)]
+        public string Street { get; set; } = null!;
+        [StringLength(10)]
         public string HouseNumber { get; set; } = null!;
-        public string AppartmentNumber { get; set; }=null!;
+        [StringLength(10)]
+        public string AppartmentNumber { get; set; } = null!;
 
-        public ICollection<UserInfo> UserInfos { get; set; } = null!;
+        public ICollection<UserInfo> UserInfos { get; set; } 
+        public Address ( )
+        {
+            UserInfos = new HashSet<UserInfo>( );
+        }
     }
 }
