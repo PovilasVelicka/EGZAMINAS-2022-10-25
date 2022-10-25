@@ -17,10 +17,10 @@ namespace RegistrationSystem.Entities.Models
         public string Phone { get; set; } = null!;
         [StringLength(150)]
         public string Email { get; set; } = null!;
-        public byte[ ] Picture { get; set; } = null!;
-        public int LivingAddressId { get; set; }
 
+        public Guid AccountId { get; set; }
+        public Account Account { get; set; } = null!;
         public int AddressId { get; set; }
-        public Address LivingAddress { get; set; } = null!;
+        public Address Address { get; set; } = null!;
     }
 }

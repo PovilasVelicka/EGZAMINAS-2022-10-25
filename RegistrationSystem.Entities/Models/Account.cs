@@ -18,7 +18,7 @@ namespace RegistrationSystem.Entities.Models
         public byte[] Photo { get; set; }=null!;
 
 
-
+        public int? UserInfoId { get; set; } 
         public UserInfo? UserInfo { get; set; }
     }
 }
