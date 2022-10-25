@@ -1,0 +1,17 @@
+Klasës (visi laukai privalomi):
+	Account, (laukas su nuotrauka privalomas 200x200)
+	UserInfo, (iraðomas po Account sukûrimo)
+	Address
+
+Enum UserRole
+	User,
+	Admin
+
+EndPoint'ai Update kiekviena UserInfo laukà
+
+ImageService - ið pateikto img padaryti 200x200
+
+UserService
+	Gauti visà info ið UserInfo pagal usreId
+	Admin paðalinti Account pagal userId
+
