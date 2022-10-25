@@ -9,7 +9,7 @@ namespace RegistrationSystem.AccessData
     internal class AppDbContext : DbContext
     {
         public DbSet<Account> Accounts { get; set; } = null!;
-
+        public DbSet<Address> Addresses { get; set; } = null!;
 
         public AppDbContext ( ) { }
 
