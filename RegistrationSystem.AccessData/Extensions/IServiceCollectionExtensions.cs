@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RegistrationSystem.AccessData.Repositories;
+using RegistrationSystem.Common.Interfaces.AccessData;
 
 namespace RegistrationSystem.AccessData.Extensions
 {
@@ -11,10 +13,9 @@ namespace RegistrationSystem.AccessData.Extensions
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("RegistrationSystemDb")));
 
+            services.AddScoped<IAccountsRepository, AccountsRepository>( );
+            services.AddScoped<IAddressesRepository, AddressesRepository>( );
 
-            //services.AddScoped<IAccountsRepository, AccountsRepository>( );
-            //services.AddScoped<INotesRepository, NotesRepository>( );
-            //services.AddScoped<IFilesRepository, FilesRepository>( );
             return services;
         }
     }
