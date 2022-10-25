@@ -14,11 +14,13 @@ namespace RegistrationSystem.Entities.Models
         public byte[ ] Password { get; set; } = null!;
         [MaxLength(460)]
         public byte[ ] Salt { get; set; } = null!;
+        [StringLength(20)]
         public UserRole Role { get; set; }     
         public byte[] Photo { get; set; }=null!;
+        public int? UserInfoId { get; set; }
 
-
-        public int? UserInfoId { get; set; } 
+        [ForeignKey("UserInfoId")]
+        [InverseProperty("Account")]
         public UserInfo? UserInfo { get; set; }
     }
 }

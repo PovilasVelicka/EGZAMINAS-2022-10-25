@@ -18,9 +18,9 @@ namespace RegistrationSystem.Entities.Models
         [StringLength(150)]
         public string Email { get; set; } = null!;
 
-        public Guid AccountId { get; set; }
-        public Account Account { get; set; } = null!;
+        [InverseProperty("UserInfo")]
+        public virtual Account Account { get; set; } = null!;
         public int AddressId { get; set; }
-        public Address Address { get; set; } = null!;
+        public virtual Address Address { get; set; } = null!;
     }
 }

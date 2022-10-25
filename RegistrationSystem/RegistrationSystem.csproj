@@ -19,4 +19,8 @@
     <Folder Include="Controllers\RegistrationController\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RegistrationSystem.AccessData\RegistrationSystem.AccessData.csproj" />
+  </ItemGroup>
+
 </Project>
