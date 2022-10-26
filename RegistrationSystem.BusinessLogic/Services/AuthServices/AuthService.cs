@@ -49,7 +49,7 @@ namespace NoteBook.BusinessLogic.Services.AuthServices
                 return new ServiceResponseDto<string>(null, "User name already exists", (int)HttpStatusCode.Conflict);
             }
 
-            var adminCount = await _accountsRepository.CountRoleAsync(UserRole.PeopleAdmin);
+            var adminCount = await _accountsRepository.CountRoleAsync(UserRole.Admin);
 
             var account = CreateAccount(loginName, password, adminCount == 0 ? UserRole.Admin : UserRole.User);
 
@@ -60,8 +60,7 @@ namespace NoteBook.BusinessLogic.Services.AuthServices
             catch (Exception e)
             {
                 string errMessage = $"Can't create user with: " +
-                    $"\n\tlogin-name: {loginName}" +
-                    $"\n\temail: {email}" +
+                    $"\n\tlogin-name: {loginName}" +      
                     $"\n\terror: {e.Message} {e.InnerException}";
                 _logger.LogError(message: errMessage);
 
