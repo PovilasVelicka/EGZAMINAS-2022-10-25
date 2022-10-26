@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RegistrationSystem.Common.Interfaces;
+using RegistrationSystem.Common.Interfaces.AccessData;
 using RegistrationSystem.Entities.Models;
 
 namespace RegistrationSystem.AccessData.Repositories

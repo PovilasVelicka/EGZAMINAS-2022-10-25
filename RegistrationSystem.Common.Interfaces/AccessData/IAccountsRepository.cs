@@ -1,7 +1,7 @@
 ﻿using RegistrationSystem.Entities.Enums;
 using RegistrationSystem.Entities.Models;
 
-namespace RegistrationSystem.Common.Interfaces
+namespace RegistrationSystem.Common.Interfaces.AccessData
 {
     public interface IAccountsRepository
     {

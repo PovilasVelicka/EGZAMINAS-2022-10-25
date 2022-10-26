@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using RegistrationSystem.BusinessLogic.DTOs;
+using RegistrationSystem.Common.Interfaces;
 using RegistrationSystem.Common.Interfaces.AccessData;
 using RegistrationSystem.Entities.Enums;
 using RegistrationSystem.Entities.Models;
