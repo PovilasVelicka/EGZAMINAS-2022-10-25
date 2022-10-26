@@ -8,6 +8,6 @@ namespace RegistrationSystem.Common.Interfaces.Services
 {
     public interface IAccountService
     {
-        Task<IAccountDto> Get
+  
     }
 }

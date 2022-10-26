@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using NoteBook.BusinessLogic.Services.AuthServices;
-using NoteBook.Common.Interfaces.Services;
+using RegistrationSystem.BusinessLogic.Services.AuthServices;
+
 using System.Text;
 
 namespace RegistrationSystem.BusinessLogic.Extensions

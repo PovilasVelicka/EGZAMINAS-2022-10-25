@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace NoteBook.BusinessLogic.Services.AuthServices
+namespace RegistrationSystem.BusinessLogic.Services.AuthServices
 {
     internal class JwtService : IJwtService
     {
@@ -26,7 +26,6 @@ namespace NoteBook.BusinessLogic.Services.AuthServices
             };
 
             var secret = _configuration.GetSection("Jwt:Key").Value;
-            // secret reikia  prisiskirti simetric securyti objektui
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
             var token = new JwtSecurityToken(

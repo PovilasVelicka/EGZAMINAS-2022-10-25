@@ -1,6 +1,6 @@
 ﻿using RegistrationSystem.Entities.Models;
 
-namespace NoteBook.BusinessLogic.Services.AuthServices
+namespace RegistrationSystem.BusinessLogic.Services.AuthServices
 {
     public interface IJwtService
     {

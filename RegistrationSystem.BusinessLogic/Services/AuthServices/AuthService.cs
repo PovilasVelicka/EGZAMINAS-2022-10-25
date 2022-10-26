@@ -1,9 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using NoteBook.Common.Interfaces.DataAccess;
-using NoteBook.Common.Interfaces.DTOs;
-using NoteBook.Common.Interfaces.Services;
-using NoteBook.Entity.Enums;
-using NoteBook.Entity.Models;
 using RegistrationSystem.BusinessLogic.DTOs;
 using RegistrationSystem.Common.Interfaces.AccessData;
 using RegistrationSystem.Entities.Enums;
@@ -11,7 +6,7 @@ using RegistrationSystem.Entities.Models;
 using System.Net;
 using Utilites.Exstensions;
 
-namespace NoteBook.BusinessLogic.Services.AuthServices
+namespace RegistrationSystem.BusinessLogic.Services.AuthServices
 {
     internal class AuthService : IAuthService
     {
@@ -27,24 +22,24 @@ namespace NoteBook.BusinessLogic.Services.AuthServices
 
         public async Task<IServiceResponseDto<string>> LoginAsync (string username, string password)
         {
-            var account = await _accountsRepository.GetByNameAsync(username);
+            var account = await _accountsRepository.GetByLoginAsync(username);
 
             if (account == null)
             {
-                return new ServiceResponseDto<string>(default, "User name not exists", (int)HttpStatusCode.NotFound);
+                return new ServiceResponseDto<string>(null, "User name not exists", (int)HttpStatusCode.NotFound);
             }
 
             if (!password.VerifyPassword(account.PasswordHash, account.PasswordSalt))
             {
                 return new ServiceResponseDto<string>(null, "Incorrect password", (int)HttpStatusCode.Unauthorized);
-            }   
+            }
 
             return new ServiceResponseDto<string>(_jwtService.GetJwtToken(account), "Login succesfull", (int)HttpStatusCode.OK);
         }
 
         public async Task<IServiceResponseDto<string>> SignupNewAccountAsync (string loginName, string password)
         {
-            if (await _accountsRepository.GetByNameAsync(loginName) != null)
+            if (await _accountsRepository.GetByLoginAsync(loginName) != null)
             {
                 return new ServiceResponseDto<string>(null, "User name already exists", (int)HttpStatusCode.Conflict);
             }
@@ -60,13 +55,13 @@ namespace NoteBook.BusinessLogic.Services.AuthServices
             catch (Exception e)
             {
                 string errMessage = $"Can't create user with: " +
-                    $"\n\tlogin-name: {loginName}" +      
+                    $"\n\tlogin-name: {loginName}" +
                     $"\n\terror: {e.Message} {e.InnerException}";
                 _logger.LogError(message: errMessage);
 
                 return new ServiceResponseDto<string>(
-                    null, 
-                    e.InnerException?.Message ?? "Unexpected error", 
+                    null,
+                    e.InnerException?.Message ?? "Unexpected error",
                     (int)HttpStatusCode.ServiceUnavailable);
             }
 
@@ -89,8 +84,8 @@ namespace NoteBook.BusinessLogic.Services.AuthServices
                 LoginName = loginName,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
-                Role = role,   
+                Role = role,
             };
-        } 
+        }
     }
 }

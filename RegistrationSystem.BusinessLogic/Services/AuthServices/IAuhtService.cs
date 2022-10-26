@@ -1,6 +1,6 @@
 ﻿using RegistrationSystem.BusinessLogic.DTOs;
 
-namespace NoteBook.Common.Interfaces.Services
+namespace RegistrationSystem.BusinessLogic.Services.AuthServices
 {
     public interface IAuthService
     {
