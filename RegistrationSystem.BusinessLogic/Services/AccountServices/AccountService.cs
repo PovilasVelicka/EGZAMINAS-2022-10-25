@@ -21,13 +21,20 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             return new ServiceResponseDto<Account>(account);
         }
 
-        public async Task<IServiceResponseDto<string>> RemoveAccountAsync (Guid accountId, Guid userId)
+        public async Task<IServiceResponseDto<string>> DeleteAccountAsync (Guid accountId, Guid userId)
         {
             var account = await _accountRepository.GetAsync(accountId);
             if (account.Role != UserRole.Admin) return new ServiceResponseDto<string>("You do not have permissions to delete user");
-                       
-            await _accountRepository.DeleteAsync(userId);
-            return new ServiceResponseDto<string>(true, "Account deleted successfuly");
+
+            if (await _accountRepository.DeleteAsync(userId))
+            {
+                return new ServiceResponseDto<string>(true, "Account deleted successfuly");
+            }
+            else
+            {
+                return new ServiceResponseDto<string>(false, "Account not find");
+
+            }
         }
 
         public async Task<IServiceResponseDto<Account>> UpdateUserInfoAsync (Guid accountId, IUserInfoDto userInfo)
