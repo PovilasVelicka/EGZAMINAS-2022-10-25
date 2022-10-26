@@ -157,7 +157,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
                 account.UserInfo.Address.HouseNumber = houseNumber;
                 account.UserInfo.Address.AppartmentNumber = appartmentNumber;
             }
-        }        
+        }
 
         private static Account CreateAccount (string loginName, string password, UserRole role)
         {

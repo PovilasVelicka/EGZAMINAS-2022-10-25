@@ -15,12 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\AuthController\" />
-    <Folder Include="Controllers\RegistrationController\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\RegistrationSystem.AccessData\RegistrationSystem.AccessData.csproj" />
+    <ProjectReference Include="..\RegistrationSystem.BusinessLogic\RegistrationSystem.BusinessLogic.csproj" />
   </ItemGroup>
 
 </Project>

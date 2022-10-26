@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using RegistrationSystem.BusinessLogic.Services.AccountServices;
 using RegistrationSystem.BusinessLogic.Services.AuthServices;
 
 using System.Text;
@@ -29,6 +30,12 @@ namespace RegistrationSystem.BusinessLogic.Extensions
 
             services.AddScoped<IJwtService, JwtService>( );
 
+            return services;
+        }
+
+        public static IServiceCollection AddServices (this IServiceCollection services)
+        {
+            services.AddScoped<IAccountService, AccountService>( );        
             return services;
         }
     }

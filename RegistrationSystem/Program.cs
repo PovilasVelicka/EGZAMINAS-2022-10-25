@@ -1,5 +1,5 @@
-using Microsoft.Extensions.DependencyInjection;
 using RegistrationSystem.AccessData.Extensions;
+using RegistrationSystem.BusinessLogic.Extensions;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,8 +9,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers( );
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services
-    .AddDatabase(builder.Configuration);
-  
+    .AddDatabase(builder.Configuration)
+    .AddAuthorization(builder.Configuration)
+    .AddServices( )
+    .AddControllers( )
+    .AddJsonOptions(opts =>
+    {
+        var enumConverter = new JsonStringEnumConverter( );
+        opts.JsonSerializerOptions.Converters.Add(enumConverter);
+    });
 builder.Services.AddEndpointsApiExplorer( );
 builder.Services.AddSwaggerGen( );
 
@@ -25,6 +32,7 @@ if (app.Environment.IsDevelopment( ))
 
 app.UseHttpsRedirection( );
 
+app.UseAuthentication( );
 app.UseAuthorization( );
 
 app.MapControllers( );
