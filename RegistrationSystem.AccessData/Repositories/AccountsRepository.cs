@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RegistrationSystem.Common.Interfaces;
 using RegistrationSystem.Entities.Enums;
 using RegistrationSystem.Entities.Models;
 
