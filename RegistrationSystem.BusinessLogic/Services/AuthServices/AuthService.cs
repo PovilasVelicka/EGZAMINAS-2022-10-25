@@ -4,6 +4,7 @@ using NoteBook.Common.Interfaces.DTOs;
 using NoteBook.Common.Interfaces.Services;
 using NoteBook.Entity.Enums;
 using NoteBook.Entity.Models;
+using RegistrationSystem.BusinessLogic.DTOs;
 using RegistrationSystem.Common.Interfaces.AccessData;
 using RegistrationSystem.Entities.Enums;
 using RegistrationSystem.Entities.Models;
@@ -12,7 +13,7 @@ using Utilites.Exstensions;
 
 namespace NoteBook.BusinessLogic.Services.AuthServices
 {
-    public class AuthService : IAuthService
+    internal class AuthService : IAuthService
     {
         private readonly IAccountsRepository _accountsRepository;
         private readonly IJwtService _jwtService;
@@ -24,7 +25,7 @@ namespace NoteBook.BusinessLogic.Services.AuthServices
             _jwtService = jwtService;
         }
 
-        public async Task<string> LoginAsync (string username, string password)
+        public async Task<IServiceResponseDto<string>> LoginAsync (string username, string password)
         {
             var account = await _accountsRepository.GetByNameAsync(username);
 
@@ -36,37 +37,25 @@ namespace NoteBook.BusinessLogic.Services.AuthServices
             if (!password.VerifyPassword(account.PasswordHash, account.PasswordSalt))
             {
                 return new ServiceResponseDto<string>(null, "Incorrect password", (int)HttpStatusCode.Unauthorized);
-            }
-
-            if (account.Disabled)
-            {
-                return new ServiceResponseDto<string>(null, "User disabled, please contact administrator", (int)HttpStatusCode.Forbidden);
-            }
+            }   
 
             return new ServiceResponseDto<string>(_jwtService.GetJwtToken(account), "Login succesfull", (int)HttpStatusCode.OK);
         }
 
-        public async Task<ServiceResponseDto<string>> SignupNewAccountAsync (string loginName, string password, string email, string firstName, string lastName)
+        public async Task<IServiceResponseDto<string>> SignupNewAccountAsync (string loginName, string password)
         {
             if (await _accountsRepository.GetByNameAsync(loginName) != null)
             {
                 return new ServiceResponseDto<string>(null, "User name already exists", (int)HttpStatusCode.Conflict);
             }
 
-            if (await _accountsRepository.GetByEmailAsync(email) != null)
-            {
-                return new ServiceResponseDto<string>(null, "Email already exists", (int)HttpStatusCode.Conflict);
-            }
+            var adminCount = await _accountsRepository.CountRoleAsync(UserRole.PeopleAdmin);
 
-            var adminCount = await _accountsRepository.CountRoleAsync(Role.PeopleAdmin);
-
-            var account = CreateAccount(loginName, password, email, adminCount == 0 ? Role.PeopleAdmin : Role.StandartUser, firstName, lastName);
-
-            await _accountsRepository.AddAsync(account);
+            var account = CreateAccount(loginName, password, adminCount == 0 ? UserRole.Admin : UserRole.User);
 
             try
             {
-                await _accountsRepository.SaveChangesAsync( );
+                await _accountsRepository.AddAsync(account);
             }
             catch (Exception e)
             {
@@ -91,7 +80,7 @@ namespace NoteBook.BusinessLogic.Services.AuthServices
             return new ServiceResponseDto<string>(_jwtService.GetJwtToken(account), "", (int)HttpStatusCode.Created);
         }
 
-        private static Account CreateAccount (string loginName, string password, string email, UserRole role)
+        private static Account CreateAccount (string loginName, string password, UserRole role)
         {
             var (passwordHash, passwordSalt) = password.CreatePasswordHash( );
 
@@ -101,9 +90,8 @@ namespace NoteBook.BusinessLogic.Services.AuthServices
                 LoginName = loginName,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
-                Role = role,
-   
+                Role = role,   
             };
-        }
+        } 
     }
 }

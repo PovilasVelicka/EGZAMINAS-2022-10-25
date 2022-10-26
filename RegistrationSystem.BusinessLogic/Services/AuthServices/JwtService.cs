@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using NoteBook.Common.Interfaces.Services;
-using NoteBook.Entity.Models;
+
+using RegistrationSystem.Entities.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -17,13 +17,12 @@ namespace NoteBook.BusinessLogic.Services.AuthServices
         }
         public string GetJwtToken (Account account)
         {
-            // Galima prideti daugiau pav. Id...
+
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, account.User.FullName),
-                new Claim(ClaimTypes.Email, account.Email.Value),
+                new Claim(ClaimTypes.Name, account.LoginName),
                 new Claim(ClaimTypes.Role, account.Role.ToString()),
-                new Claim(ClaimTypes.NameIdentifier, account.UserId?.ToString() ??  Guid.Empty.ToString())
+                new Claim(ClaimTypes.NameIdentifier, account.Id.ToString())
             };
 
             var secret = _configuration.GetSection("Jwt:Key").Value;
