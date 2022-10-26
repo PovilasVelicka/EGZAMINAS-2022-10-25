@@ -9,6 +9,7 @@ namespace RegistrationSystem.Common.Interfaces.AccessData
         Task UpdateAsync (Account account);
         Task DeleteAsync (Guid id);
         Task<Account> GetAsync (Guid id);
+        Task<Account> GetByUserIdAsync (int id);
         Task<List<Account>> GetAllAsync ( );
         Task<Account?> GetByLoginAsync (string userLogin);
         Task<int> CountRoleAsync (UserRole role);
