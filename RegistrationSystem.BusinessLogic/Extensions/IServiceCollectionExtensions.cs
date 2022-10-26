@@ -14,7 +14,7 @@ namespace RegistrationSystem.BusinessLogic.Extensions
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options => options.TokenValidationParameters =
-                new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
@@ -26,17 +26,10 @@ namespace RegistrationSystem.BusinessLogic.Extensions
                 });
 
             services.AddAuthorizationCore( );
-            services.AddScoped<IAuthService, AuthService>( );
+
             services.AddScoped<IJwtService, JwtService>( );
 
             return services;
         }
-
-        //public static IServiceCollection AddServices (this IServiceCollection services)
-        //{
-        //    services.AddScoped<IPeopleAdminService, PeopleAdminService>( );
-        //    services.AddScoped<INotesService, NotesService>( );
-        //    return services;
-        //}
     }
 }

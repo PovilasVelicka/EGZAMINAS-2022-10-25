@@ -1,32 +1,103 @@
-﻿using RegistrationSystem.BusinessLogic.DTOs;
+﻿using Microsoft.Extensions.Logging;
+using RegistrationSystem.BusinessLogic.DTOs;
+using RegistrationSystem.BusinessLogic.Services.AuthServices;
 using RegistrationSystem.Common.Interfaces.AccessData;
 using RegistrationSystem.Entities.Enums;
 using RegistrationSystem.Entities.Models;
+using System.Net;
+using Utilites.Exstensions;
 
 namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 {
     internal class AccountService : IAccountService
     {
-        private readonly IAccountsRepository _accountRepository;
+        private readonly IAccountsRepository _accountsRepository;
         private readonly IAddressesRepository _addressesRepository;
-        public AccountService (IAccountsRepository accountRepository, IAddressesRepository addressesRepository)
+        private readonly IJwtService _jwtService;
+        private readonly ILogger<AccountService> _logger;
+        public AccountService (
+            IAccountsRepository accountRepository,
+            IAddressesRepository addressesRepository,
+            IJwtService jwtService,
+            ILogger<AccountService> logger)
         {
-            _accountRepository = accountRepository;
+            _accountsRepository = accountRepository;
             _addressesRepository = addressesRepository;
+            _jwtService = jwtService;
+            _logger = logger;
+        }
+
+        public async Task<IServiceResponseDto<string>> LoginAsync (string loginName, string password)
+        {
+            var account = await _accountsRepository.GetByLoginAsync(loginName);
+
+            if (account == null)
+            {
+                return new ServiceResponseDto<string>(null, "User name not exists", (int)HttpStatusCode.NotFound);
+            }
+
+            if (!password.VerifyPassword(account.PasswordHash, account.PasswordSalt))
+            {
+                return new ServiceResponseDto<string>(null, "Incorrect password", (int)HttpStatusCode.Unauthorized);
+            }
+
+            return new ServiceResponseDto<string>(_jwtService.GetJwtToken(account), "Login succesfull", (int)HttpStatusCode.OK);
+        }
+
+        public async Task<IServiceResponseDto<string>> SignupNewAccountAsync (string loginName, string password, IUserInfoDto userInfo)
+        {
+            if (await _accountsRepository.GetByLoginAsync(loginName) != null)
+            {
+                return new ServiceResponseDto<string>(null, "User name already exists", (int)HttpStatusCode.Conflict);
+            }
+
+            if (!userInfo.IsAllPropertiesNotEmpty( )) return new ServiceResponseDto<string>(null, "All fields are required to create user", (int)HttpStatusCode.BadRequest);
+
+            var adminCount = await _accountsRepository.CountRoleAsync(UserRole.Admin);
+
+            var account = CreateAccount(loginName, password, adminCount == 0 ? UserRole.Admin : UserRole.User);
+
+
+            await MapUserInfo(account, userInfo);
+
+            try
+            {
+                await _accountsRepository.AddAsync(account);
+            }
+            catch (Exception e)
+            {
+                string errMessage = $"Can't create user with: " +
+                    $"\n\tlogin-name: {loginName}" +
+                    $"\n\terror: {e.Message} {e.InnerException}";
+                _logger.LogError(message: errMessage);
+
+                return new ServiceResponseDto<string>(
+                    null,
+                    e.InnerException?.Message ?? "Unexpected error",
+                    (int)HttpStatusCode.ServiceUnavailable);
+            }
+
+            _logger.Log(
+               LogLevel.Information,
+               $"New user created: " +
+               $"\n\tId: {account.Id}" +
+               $"\n\tName: {account.LoginName}");
+
+            return new ServiceResponseDto<string>(_jwtService.GetJwtToken(account), "", (int)HttpStatusCode.Created);
         }
 
         public async Task<IServiceResponseDto<Account>> GetUserInfoAsync (Guid accountId)
         {
-            var account = await _accountRepository.GetAsync(accountId);
+            var account = await _accountsRepository.GetAsync(accountId);
             return new ServiceResponseDto<Account>(account);
         }
 
         public async Task<IServiceResponseDto<string>> DeleteAccountAsync (Guid accountId, Guid userId)
         {
-            var account = await _accountRepository.GetAsync(accountId);
+            var account = await _accountsRepository.GetAsync(accountId);
             if (account.Role != UserRole.Admin) return new ServiceResponseDto<string>("You do not have permissions to delete user");
 
-            if (await _accountRepository.DeleteAsync(userId))
+            if (await _accountsRepository.DeleteAsync(userId))
             {
                 return new ServiceResponseDto<string>(true, "Account deleted successfuly");
             }
@@ -40,7 +111,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
         public async Task<IServiceResponseDto<Account>> UpdateUserInfoAsync (Guid accountId, IUserInfoDto userInfo)
         {
 
-            var account = await _accountRepository.GetAsync(accountId);
+            var account = await _accountsRepository.GetAsync(accountId);
 
             if (account.UserInfo == null)
             {
@@ -49,34 +120,6 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
             await MapUserInfo(account, userInfo);
 
-            return new ServiceResponseDto<Account>(account);
-        }
-
-        public async Task<IServiceResponseDto<Account>> CreateUserInfoAsync (Guid accountId, IUserInfoDto userInfo)
-        {
-
-            var account = await _accountRepository.GetAsync(accountId);
-
-            if (account.UserInfo != null)
-            {
-                return new ServiceResponseDto<Account>("User information already exists!");
-            }
-
-            if (
-               string.IsNullOrWhiteSpace(userInfo.FirstName)
-            || string.IsNullOrWhiteSpace(userInfo.LastName)
-            || string.IsNullOrWhiteSpace(userInfo.PersonalCode)
-            || string.IsNullOrWhiteSpace(userInfo.Phone)
-            || string.IsNullOrWhiteSpace(userInfo.Email)
-            || userInfo.Photo == null
-            || string.IsNullOrWhiteSpace(userInfo.City)
-            || string.IsNullOrWhiteSpace(userInfo.Street)
-            || string.IsNullOrWhiteSpace(userInfo.HouseNumber)
-            || string.IsNullOrWhiteSpace(userInfo.AppartmentNumber)) new ServiceResponseDto<Account>("All fields are required to create user information!");
-
-            await MapUserInfo(account, userInfo);
-
-            await _accountRepository.UpdateAsync(account);
             return new ServiceResponseDto<Account>(account);
         }
 
@@ -114,6 +157,24 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
                 account.UserInfo.Address.HouseNumber = houseNumber;
                 account.UserInfo.Address.AppartmentNumber = appartmentNumber;
             }
+        }        
+
+        private static Account CreateAccount (string loginName, string password, UserRole role)
+        {
+            var (passwordHash, passwordSalt) = password.CreatePasswordHash( );
+
+            return new Account
+            {
+                Id = Guid.NewGuid( ),
+                LoginName = loginName,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt,
+                Role = role,
+                UserInfo = new UserInfo
+                {
+                    Address = new Address( )
+                },
+            };
         }
     }
 }

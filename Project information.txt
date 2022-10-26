@@ -15,3 +15,18 @@ UserService
 	Gauti visà info ið UserInfo pagal usreId
 	Admin paðalinti Account pagal userId
 
+
+
+	
+
+            //if (
+            //   string.IsNullOrWhiteSpace(userInfo.FirstName)
+            //|| string.IsNullOrWhiteSpace(userInfo.LastName)
+            //|| string.IsNullOrWhiteSpace(userInfo.PersonalCode)
+            //|| string.IsNullOrWhiteSpace(userInfo.Phone)
+            //|| string.IsNullOrWhiteSpace(userInfo.Email)
+            //|| userInfo.Photo == null
+            //|| string.IsNullOrWhiteSpace(userInfo.City)
+            //|| string.IsNullOrWhiteSpace(userInfo.Street)
+            //|| string.IsNullOrWhiteSpace(userInfo.HouseNumber)
+            //|| string.IsNullOrWhiteSpace(userInfo.AppartmentNumber)) new ServiceResponseDto<Account>("All fields are required to create user information!");
