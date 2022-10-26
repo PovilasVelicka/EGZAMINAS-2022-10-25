@@ -11,12 +11,12 @@ namespace RegistrationSystem.Entities.Models
         [StringLength(100)]
         public string LoginName { get; set; } = null!;
         [MaxLength(460)]
-        public byte[ ] Password { get; set; } = null!;
+        public byte[ ] PasswordHash { get; set; } = null!;
         [MaxLength(460)]
-        public byte[ ] Salt { get; set; } = null!;
+        public byte[ ] PasswordSalt { get; set; } = null!;
         [StringLength(20)]
         public UserRole Role { get; set; }     
-        public byte[] Photo { get; set; }=null!;
+    
         public int? UserInfoId { get; set; }
 
         [ForeignKey("UserInfoId")]
