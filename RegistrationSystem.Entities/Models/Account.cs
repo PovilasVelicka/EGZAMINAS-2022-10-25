@@ -17,7 +17,7 @@ namespace RegistrationSystem.Entities.Models
         [StringLength(20)]
         public UserRole Role { get; set; }     
     
-        public int? UserInfoId { get; set; }
+        public int UserInfoId { get; set; }
 
         [ForeignKey("UserInfoId")]
         [InverseProperty("Account")]
