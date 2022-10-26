@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RegistrationSystem.Entities.Enums;
 using RegistrationSystem.Entities.Models;
-using System.Data;
-using System.Reflection;
 
 namespace RegistrationSystem.AccessData
 {
@@ -25,7 +23,7 @@ namespace RegistrationSystem.AccessData
                     .HasConversion(
                 u => u.ToString( ),
                 d => (UserRole)Enum.Parse(typeof(UserRole), d));
-            });           
+            });
         }
     }
 }
