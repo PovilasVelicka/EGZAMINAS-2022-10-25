@@ -27,8 +27,9 @@ namespace RegistrationSystem.Controllers
         [HttpPost("signup")]
         public async Task<IActionResult> SignUpAsync ([FromForm] SignupRequest signupRequest)
         {
-   
-            var response = await _accountService.SignupNewAccountAsync(signupRequest.LoginName, signupRequest.Password, signupRequest);
+            var userDto = new UserInfoDto(signupRequest);
+
+            var response = await _accountService.SignupAccountAsync(signupRequest.LoginName, signupRequest.Password, userDto);
 
             return StatusCode(response.StatuCode, new LoginResponse<string>(response));
         }

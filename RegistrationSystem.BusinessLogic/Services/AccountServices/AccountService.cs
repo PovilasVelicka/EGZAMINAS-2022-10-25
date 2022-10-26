@@ -44,7 +44,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             return new ServiceResponseDto<string>(_jwtService.GetJwtToken(account), "Login succesfull", (int)HttpStatusCode.OK);
         }
 
-        public async Task<IServiceResponseDto<string>> SignupNewAccountAsync (string loginName, string password, IUserInfoDto userInfo)
+        public async Task<IServiceResponseDto<string>> SignupAccountAsync (string loginName, string password, IUserInfoDto userInfo)
         {
             if (await _accountsRepository.GetByLoginAsync(loginName) != null)
             {
