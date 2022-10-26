@@ -25,11 +25,13 @@ namespace RegistrationSystem.AccessData.Repositories
             return await _context.Accounts.CountAsync(a => a.Role == role);
         }
 
-        public async Task DeleteAsync (Guid id)
+        public async Task<bool> DeleteAsync (Guid id)
         {
             var account = await GetAsync(id);
+            if (account == null) return false;
             _context.Accounts.Remove(account);
             await _context.SaveChangesAsync( );
+            return true;
         }
 
         public async Task<List<Account>> GetAllAsync ( )
