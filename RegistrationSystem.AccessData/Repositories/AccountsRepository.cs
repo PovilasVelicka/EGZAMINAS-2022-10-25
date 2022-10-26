@@ -49,6 +49,12 @@ namespace RegistrationSystem.AccessData.Repositories
 
         }
 
+        public async Task<Account> GetByUserIdAsync (int id)
+        {
+            var account = await AccountsQuery( ).SingleAsync(u => u.UserInfoId == id);
+            return account;
+        }
+
         public async Task UpdateAsync (Account account)
         {
             _context.Accounts.Update(account);
