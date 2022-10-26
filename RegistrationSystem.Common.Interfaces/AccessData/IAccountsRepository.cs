@@ -1,4 +1,5 @@
-﻿using RegistrationSystem.Entities.Models;
+﻿using RegistrationSystem.Entities.Enums;
+using RegistrationSystem.Entities.Models;
 
 namespace RegistrationSystem.Common.Interfaces.AccessData
 {
@@ -8,6 +9,8 @@ namespace RegistrationSystem.Common.Interfaces.AccessData
         Task UpdateAsync (Account account);
         Task DeleteAsync (Guid id);
         Task<Account> GetAsync (Guid id);
-        Task<List<Account>> GetAllAsync ();
+        Task<List<Account>> GetAllAsync ( );
+        Task<Account?> GetByLoginAsync (string userLogin);
+        Task<int> CountRoleAsync (UserRole role);
     }
 }

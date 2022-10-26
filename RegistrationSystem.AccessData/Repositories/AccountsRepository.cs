@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RegistrationSystem.Common.Interfaces.AccessData;
+using RegistrationSystem.Entities.Enums;
 using RegistrationSystem.Entities.Models;
 
 namespace RegistrationSystem.AccessData.Repositories
@@ -19,6 +20,11 @@ namespace RegistrationSystem.AccessData.Repositories
             return account.Id;
         }
 
+        public async Task<int> CountRoleAsync (UserRole role)
+        {
+            return await _context.Accounts.CountAsync(a=>a.Role == role);
+        }
+
         public async Task DeleteAsync (Guid id)
         {
             var account = await GetAsync(id);
@@ -36,10 +42,22 @@ namespace RegistrationSystem.AccessData.Repositories
             return await _context.Accounts.SingleAsync(a => a.Id.Equals(id));
         }
 
+        public async Task<Account?> GetByLoginAsync (string userLogin)
+        {
+            var account = await AccountsQuery().SingleOrDefaultAsync(a => a.LoginName == userLogin);
+            return account;
+             
+        }
+
         public async Task UpdateAsync (Account account)
         {
             _context.Accounts.Update(account);
             await _context.SaveChangesAsync( );
+        }
+
+        private IQueryable<Account> AccountsQuery ( )
+        {
+            return _context.Accounts.Include(u => u.UserInfo).ThenInclude(a => a!.Address);
         }
     }
 }
