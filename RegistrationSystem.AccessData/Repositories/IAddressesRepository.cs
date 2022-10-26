@@ -1,6 +1,6 @@
 ﻿using RegistrationSystem.Entities.Models;
 
-namespace RegistrationSystem.Common.Interfaces.AccessData
+namespace RegistrationSystem.AccessData.Repositories
 {
     public interface IAddressesRepository
     {
