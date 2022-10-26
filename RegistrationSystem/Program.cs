@@ -18,6 +18,7 @@ builder.Services
         var enumConverter = new JsonStringEnumConverter( );
         opts.JsonSerializerOptions.Converters.Add(enumConverter);
     });
+
 builder.Services.AddEndpointsApiExplorer( );
 builder.Services.AddSwaggerGen( );
 

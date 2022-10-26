@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RegistrationSystem.BusinessLogic.Services.AccountServices;
 using RegistrationSystem.Controllers.DTOs;
@@ -18,16 +17,20 @@ namespace RegistrationSystem.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> LoginAsync ([FromForm] LoginRequest loginRequest ) 
+        public async Task<IActionResult> LoginAsync ([FromForm] LoginRequest loginRequest)
         {
-            var response = await _accountService.LoginAsync(loginRequest.LoginName,loginRequest.Password);
+            var response = await _accountService.LoginAsync(loginRequest.LoginName, loginRequest.Password);
+
             return StatusCode(response.StatuCode, new LoginResponse<string>(response));
         }
 
-        //[HttpPost("signup")]
-        //public Task<IActionResult> SignUpAsync ( ) 
-        //{ 
+        [HttpPost("signup")]
+        public async Task<IActionResult> SignUpAsync ([FromForm] SignupRequest signupRequest)
+        {
+   
+            var response = await _accountService.SignupNewAccountAsync(signupRequest.LoginName, signupRequest.Password, signupRequest);
 
-        //}
+            return StatusCode(response.StatuCode, new LoginResponse<string>(response));
+        }
     }
 }
