@@ -4,16 +4,16 @@ namespace RegistrationSystem.Controllers.DTOs
 {
     public class UserInfoDto : IUserInfoDto
     {
-        public string? FirstName { get; }
-        public string? LastName { get; }
-        public string? PersonalCode { get; }
-        public string? Phone { get; }
-        public string? Email { get; }
-        public byte[ ]? Photo { get; }
-        public string? City { get; }
-        public string? Street { get; }
-        public string? HouseNumber { get; }
-        public string? AppartmentNumber { get; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? PersonalCode { get; set; }
+        public string? Phone { get; set; }
+        public string? Email { get; set; }
+        public byte[ ]? Photo { get; set; }
+        public string? City { get; set; }
+        public string? Street { get; set; }
+        public string? HouseNumber { get; set; }
+        public string? AppartmentNumber { get; set; }
         public bool IsAllPropertiesNotEmpty ( )
         {
             return FirstName != null
