@@ -37,12 +37,24 @@ namespace RegistrationSystem.AccessData.Repositories
 
         public async Task<List<Account>> GetAllAsync ( )
         {
-            return await _context.Accounts.ToListAsync( );
+            return await AccountsQuery( ).ToListAsync( );
+        }
+
+        public async Task<List<Account>> GetAllAsync (string searchSubstring)
+        {
+            var nospaceSubstring = searchSubstring.Replace(" ", "");
+            return await AccountsQuery( )
+                .Where(a => (
+                    a.LoginName
+                    + a.UserInfo.FirstName
+                    + a.UserInfo.LastName
+                    + a.UserInfo.Email).Contains(nospaceSubstring))
+                .ToListAsync( );
         }
 
         public async Task<Account> GetAsync (Guid id)
         {
-            return await _context.Accounts.SingleAsync(a => a.Id.Equals(id));
+            return await AccountsQuery( ).SingleAsync(a => a.Id.Equals(id));
         }
 
         public async Task<Account?> GetByLoginAsync (string userLogin)
