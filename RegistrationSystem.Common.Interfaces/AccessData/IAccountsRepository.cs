@@ -17,6 +17,8 @@ namespace RegistrationSystem.Common.Interfaces.AccessData
 
         Task<List<Account>> GetAllAsync ( );
 
+        Task<List<Account>> GetAllAsync (string searchSubstring);
+
         Task<Account?> GetByLoginAsync (string userLogin);
 
         Task<int> CountRoleAsync (UserRole role);
