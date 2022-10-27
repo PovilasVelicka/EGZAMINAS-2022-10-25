@@ -19,18 +19,17 @@ namespace RegistrationSystem.Controllers
             _accountService = accountService;
         }
 
-        [HttpGet("info")]
+        [HttpGet("details")]
         public async Task<IActionResult> GetUserInfo ( )
         {
             var response = await _accountService.GetUserInfoAsync(this.GetUserGuid( ));
-
             return StatusCode(response.StatuCode, new UserInfoResponse(response));
         }
 
         [HttpPatch("change/first-name")]
         public async Task<IActionResult> UpdateFirstName ([FromForm] string firstName)
         {
-            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid(), new UserInfoDto { FirstName = firstName });
+            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { FirstName = firstName });
             return StatusCode(response.StatuCode, response.Message);
         }
 
@@ -103,18 +102,19 @@ namespace RegistrationSystem.Controllers
 
         [HttpDelete("admin/delete-user")]
         [AuthorizeRoles(UserRole.Admin)]
-        public async Task<IActionResult> DeleteUserAsync ([FromForm] Guid userGuid)
+        public async Task<IActionResult> DeleteUser ([FromForm] Guid userGuid)
         {
-            var response = await _accountService.DeleteAccountAsync(this.GetUserGuid(), userGuid);
-
+            var response = await _accountService.DeleteAccountAsync(this.GetUserGuid( ), userGuid);
             return StatusCode(response.StatuCode, response.Message);
         }
 
-        [HttpGet("admin/users")]
+        [HttpGet("admin/users/{searchText}")]
         [AuthorizeRoles(UserRole.Admin)]
-        public async Task<IActionResult> GetUsers ([FromForm] string searchText)
+        public async Task<IActionResult> GetUsers (string searchText)
         {
-
+            var response = await _accountService.GetUsersAsync(this.GetUserGuid( ), searchText);
+            var users = response.Object?.Select(u => new AdminUserInfoResponse(u));
+            return StatusCode(response.StatuCode, users);
         }
     }
 }
