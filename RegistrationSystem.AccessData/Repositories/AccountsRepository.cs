@@ -8,6 +8,7 @@ namespace RegistrationSystem.AccessData.Repositories
     internal class AccountsRepository : IAccountsRepository
     {
         private readonly AppDbContext _context;
+
         public AccountsRepository (AppDbContext context)
         {
             _context = context;
@@ -48,7 +49,6 @@ namespace RegistrationSystem.AccessData.Repositories
         {
             var account = await AccountsQuery( ).SingleOrDefaultAsync(a => a.LoginName == userLogin);
             return account;
-
         }
 
         public async Task<Account> GetByUserIdAsync (int id)
@@ -65,7 +65,7 @@ namespace RegistrationSystem.AccessData.Repositories
 
         private IQueryable<Account> AccountsQuery ( )
         {
-            return _context.Accounts.Include(u => u.UserInfo).ThenInclude(a => a!.Address);
+            return _context.Accounts.Include(u => u.UserInfo).ThenInclude(a => a.Address);
         }
     }
 }

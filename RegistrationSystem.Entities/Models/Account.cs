@@ -15,12 +15,12 @@ namespace RegistrationSystem.Entities.Models
         [MaxLength(460)]
         public byte[ ] PasswordSalt { get; set; } = null!;
         [StringLength(20)]
-        public UserRole Role { get; set; }     
-    
+        public UserRole Role { get; set; }
+
         public int UserInfoId { get; set; }
 
         [ForeignKey("UserInfoId")]
         [InverseProperty("Account")]
-        public UserInfo? UserInfo { get; set; }
+        public UserInfo UserInfo { get; set; } = null!;
     }
 }

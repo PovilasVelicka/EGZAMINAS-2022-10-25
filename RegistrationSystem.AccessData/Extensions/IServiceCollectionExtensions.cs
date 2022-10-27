@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RegistrationSystem.AccessData.Repositories;
-using RegistrationSystem.Common.Interfaces;
 using RegistrationSystem.Common.Interfaces.AccessData;
 
 namespace RegistrationSystem.AccessData.Extensions

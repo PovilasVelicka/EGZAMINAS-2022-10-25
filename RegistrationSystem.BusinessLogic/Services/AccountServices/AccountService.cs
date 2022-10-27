@@ -48,15 +48,23 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
         {
             if (await _accountsRepository.GetByLoginAsync(loginName) != null)
             {
-                return new ServiceResponseDto<string>(null, "User name already exists", (int)HttpStatusCode.Conflict);
+                return new ServiceResponseDto<string>(
+                    null,
+                    "User name already exists",
+                    (int)HttpStatusCode.Conflict);
             }
 
-            if (!userInfo.IsAllPropertiesNotEmpty( )) return new ServiceResponseDto<string>(null, "All fields are required to create user", (int)HttpStatusCode.BadRequest);
+            if (!userInfo.IsAllPropertiesNotEmpty( ))
+            {
+                return new ServiceResponseDto<string>(
+                    null,
+                    "All fields are required to create user",
+                    (int)HttpStatusCode.BadRequest);
+            }
 
             var adminCount = await _accountsRepository.CountRoleAsync(UserRole.Admin);
 
             var account = CreateAccount(loginName, password, adminCount == 0 ? UserRole.Admin : UserRole.User);
-
 
             await MapUserInfo(account, userInfo);
 
@@ -83,7 +91,10 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
                $"\n\tId: {account.Id}" +
                $"\n\tName: {account.LoginName}");
 
-            return new ServiceResponseDto<string>(_jwtService.GetJwtToken(account), "", (int)HttpStatusCode.Created);
+            return new ServiceResponseDto<string>(
+                _jwtService.GetJwtToken(account),
+                "Account created successfuly",
+                (int)HttpStatusCode.Created);
         }
 
         public async Task<IServiceResponseDto<Account>> GetUserInfoAsync (Guid accountId)
@@ -95,7 +106,11 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
         public async Task<IServiceResponseDto<string>> DeleteAccountAsync (Guid accountId, Guid userId)
         {
             var account = await _accountsRepository.GetAsync(accountId);
-            if (account.Role != UserRole.Admin) return new ServiceResponseDto<string>("You do not have permissions to delete user");
+
+            if (account.Role != UserRole.Admin)
+            {
+                return new ServiceResponseDto<string>("You do not have permissions to delete user");
+            }
 
             if (await _accountsRepository.DeleteAsync(userId))
             {
@@ -104,7 +119,6 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             else
             {
                 return new ServiceResponseDto<string>(false, "Account not find");
-
             }
         }
 
@@ -113,11 +127,6 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
             var account = await _accountsRepository.GetAsync(accountId);
 
-            if (account.UserInfo == null)
-            {
-                return new ServiceResponseDto<Account>("No user information found to update. First create user information with all fields");
-            }
-
             await MapUserInfo(account, userInfo);
 
             return new ServiceResponseDto<Account>(account);
@@ -125,13 +134,12 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
         private async Task MapUserInfo (Account account, IUserInfoDto userInfo)
         {
-            if (account.UserInfo == null) return;
-            if (!string.IsNullOrWhiteSpace(userInfo.FirstName)) account.UserInfo.FirstName = userInfo.FirstName;
-            if (!string.IsNullOrWhiteSpace(userInfo.LastName)) account.UserInfo.LastName = userInfo.LastName;
-            if (!string.IsNullOrWhiteSpace(userInfo.PersonalCode)) account.UserInfo.PersonalCode = userInfo.PersonalCode;
             if (!string.IsNullOrWhiteSpace(userInfo.Phone)) account.UserInfo.Phone = userInfo.Phone;
             if (!string.IsNullOrWhiteSpace(userInfo.Email)) account.UserInfo.Email = userInfo.Email;
-            if (userInfo.Photo != null) account.UserInfo!.Photo = userInfo.Photo;
+            if (!string.IsNullOrWhiteSpace(userInfo.LastName)) account.UserInfo.LastName = userInfo.LastName;
+            if (!string.IsNullOrWhiteSpace(userInfo.FirstName)) account.UserInfo.FirstName = userInfo.FirstName;
+            if (!string.IsNullOrWhiteSpace(userInfo.PersonalCode)) account.UserInfo.PersonalCode = userInfo.PersonalCode;
+            if (userInfo.Photo != null) account.UserInfo.Photo = userInfo.Photo;
 
             var city = string.IsNullOrWhiteSpace(userInfo.City) ? account.UserInfo.Address.City : userInfo.City;
             var street = string.IsNullOrWhiteSpace(userInfo.Street) ? account.UserInfo.Address.Street : userInfo.Street;
@@ -151,7 +159,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             }
             else
             {
-                account.UserInfo.Address = new Address( );
+                account.UserInfo.Address = new( );
                 account.UserInfo.Address.City = city;
                 account.UserInfo.Address.Street = street;
                 account.UserInfo.Address.HouseNumber = houseNumber;
@@ -170,9 +178,9 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
                 Role = role,
-                UserInfo = new UserInfo
+                UserInfo = new( )
                 {
-                    Address = new Address( )
+                    Address = new( )
                 },
             };
         }

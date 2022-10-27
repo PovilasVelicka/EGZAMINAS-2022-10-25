@@ -19,6 +19,7 @@ namespace RegistrationSystem.Entities.Models
         public string Email { get; set; } = null!;
         public byte[ ] Photo { get; set; } = null!;
 
+
         [InverseProperty("UserInfo")]
         public virtual Account Account { get; set; } = null!;
         public int AddressId { get; set; }

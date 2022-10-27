@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RegistrationSystem.BusinessLogic.DTOs
+﻿namespace RegistrationSystem.BusinessLogic.DTOs
 {
     internal class ServiceResponseDto<T> : IServiceResponseDto<T>
     {
 
         public bool IsSuccess { get; }
-
         public int StatuCode { get; }
-
         public string Message { get; }
-
         public T? Object { get; }
 
         public ServiceResponseDto (string errorMessage)

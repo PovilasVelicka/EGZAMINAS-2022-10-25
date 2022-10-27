@@ -16,7 +16,7 @@ namespace RegistrationSystem.Entities.Models
         [StringLength(10)]
         public string AppartmentNumber { get; set; } = null!;
 
-        public ICollection<UserInfo> UserInfos { get; set; } 
+        public ICollection<UserInfo> UserInfos { get; set; }
         public Address ( )
         {
             UserInfos = new HashSet<UserInfo>( );

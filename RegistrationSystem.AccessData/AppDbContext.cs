@@ -10,7 +10,6 @@ namespace RegistrationSystem.AccessData
         public DbSet<Address> Addresses { get; set; } = null!;
 
         public AppDbContext ( ) { }
-
         public AppDbContext (DbContextOptions<AppDbContext> options) : base(options) { }
 
         protected override void OnModelCreating (ModelBuilder modelBuilder)

@@ -6,8 +6,9 @@ namespace RegistrationSystem.Controllers.DTOs
     {
         public bool IsSuccess { get; set; }
         public string Message { get; set; } = null!;
-        public T? Payload { get; set; } 
-        public LoginResponse (IServiceResponseDto<T> responseDto )
+        public T? Payload { get; set; }
+
+        public LoginResponse (IServiceResponseDto<T> responseDto)
         {
             IsSuccess = responseDto.IsSuccess;
             Message = responseDto.Message;

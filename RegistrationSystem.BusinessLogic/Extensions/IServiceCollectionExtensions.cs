@@ -35,7 +35,7 @@ namespace RegistrationSystem.BusinessLogic.Extensions
 
         public static IServiceCollection AddServices (this IServiceCollection services)
         {
-            services.AddScoped<IAccountService, AccountService>( );        
+            services.AddScoped<IAccountService, AccountService>( );
             return services;
         }
     }

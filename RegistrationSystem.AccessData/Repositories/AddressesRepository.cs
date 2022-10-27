@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RegistrationSystem.Common.Interfaces;
 using RegistrationSystem.Common.Interfaces.AccessData;
 using RegistrationSystem.Entities.Models;
 
@@ -8,6 +7,7 @@ namespace RegistrationSystem.AccessData.Repositories
     internal class AddressesRepository : IAddressesRepository
     {
         private readonly AppDbContext _context;
+
         public AddressesRepository (AppDbContext context)
         {
             _context = context;
