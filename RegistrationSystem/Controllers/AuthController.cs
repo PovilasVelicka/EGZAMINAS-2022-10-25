@@ -5,7 +5,7 @@ using RegistrationSystem.Controllers.DTOs;
 
 namespace RegistrationSystem.Controllers
 {
-    [Route("gymplus")]
+    [Route("api/registration-system")]
     [ApiController]
     [AllowAnonymous]
     public class AuthController : ControllerBase

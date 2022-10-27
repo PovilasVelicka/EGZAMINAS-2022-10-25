@@ -42,7 +42,7 @@ namespace RegistrationSystem.AccessData.Repositories
 
         public async Task<Account> GetAsync (Guid id)
         {
-            return await _context.Accounts.SingleAsync(a => a.Id.Equals(id));
+            return await AccountsQuery().SingleAsync(a => a.Id.Equals(id));
         }
 
         public async Task<Account?> GetByLoginAsync (string userLogin)
