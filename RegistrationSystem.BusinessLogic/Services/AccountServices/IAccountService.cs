@@ -9,10 +9,12 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
         Task<IServiceResponseDto<string>> LoginAsync (string loginName, string password);
 
-        Task<IServiceResponseDto<Account>> GetUserInfoAsync (Guid accountId);
+        Task<IServiceResponseDto<Account>> GetUserInfoAsync (Guid userGuid);
 
-        Task<IServiceResponseDto<string>> DeleteAccountAsync (Guid accountId, Guid userId);
+        Task<IServiceResponseDto<List<Account>>> GetUsersAsync (Guid adminGuid, string searchSubstring);
 
-        Task<IServiceResponseDto<Account>> UpdateUserInfoAsync (Guid accountId, IUserInfoDto userInfo);
+        Task<IServiceResponseDto<string>> DeleteAccountAsync (Guid adminGuid, Guid userGuid);
+
+        Task<IServiceResponseDto<Account>> UpdateUserInfoAsync (Guid userGuid, IUserInfoDto userInfo);
     }
 }
