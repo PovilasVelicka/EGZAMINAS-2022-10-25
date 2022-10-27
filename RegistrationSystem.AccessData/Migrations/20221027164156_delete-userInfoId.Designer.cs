@@ -12,8 +12,8 @@ using RegistrationSystem.AccessData;
 namespace RegistrationSystem.AccessData.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221027063641_change-userinfo-nullable-property")]
-    partial class changeuserinfonullableproperty
+    [Migration("20221027164156_delete-userInfoId")]
+    partial class deleteuserInfoId
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -49,13 +49,7 @@ namespace RegistrationSystem.AccessData.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int>("UserInfoId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserInfoId")
-                        .IsUnique();
 
                     b.ToTable("Accounts", "RegistrationSystem");
                 });
@@ -101,6 +95,9 @@ namespace RegistrationSystem.AccessData.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("AddressId")
                         .HasColumnType("int");
 
@@ -135,42 +132,42 @@ namespace RegistrationSystem.AccessData.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AccountId")
+                        .IsUnique();
+
                     b.HasIndex("AddressId");
 
                     b.ToTable("UserInfos", "RegistrationSystem");
                 });
 
-            modelBuilder.Entity("RegistrationSystem.Entities.Models.Account", b =>
+            modelBuilder.Entity("RegistrationSystem.Entities.Models.UserInfo", b =>
                 {
-                    b.HasOne("RegistrationSystem.Entities.Models.UserInfo", "UserInfo")
-                        .WithOne("Account")
-                        .HasForeignKey("RegistrationSystem.Entities.Models.Account", "UserInfoId")
+                    b.HasOne("RegistrationSystem.Entities.Models.Account", "Account")
+                        .WithOne("UserInfo")
+                        .HasForeignKey("RegistrationSystem.Entities.Models.UserInfo", "AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("UserInfo");
-                });
-
-            modelBuilder.Entity("RegistrationSystem.Entities.Models.UserInfo", b =>
-                {
                     b.HasOne("RegistrationSystem.Entities.Models.Address", "Address")
                         .WithMany("UserInfos")
                         .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Account");
+
                     b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("RegistrationSystem.Entities.Models.Account", b =>
+                {
+                    b.Navigation("UserInfo")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("RegistrationSystem.Entities.Models.Address", b =>
                 {
                     b.Navigation("UserInfos");
-                });
-
-            modelBuilder.Entity("RegistrationSystem.Entities.Models.UserInfo", b =>
-                {
-                    b.Navigation("Account")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -47,9 +47,6 @@ namespace RegistrationSystem.AccessData.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int>("UserInfoId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.ToTable("Accounts", "RegistrationSystem");
@@ -152,7 +149,7 @@ namespace RegistrationSystem.AccessData.Migrations
                     b.HasOne("RegistrationSystem.Entities.Models.Address", "Address")
                         .WithMany("UserInfos")
                         .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Account");

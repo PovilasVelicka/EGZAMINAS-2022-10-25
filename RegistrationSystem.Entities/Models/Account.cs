@@ -17,8 +17,8 @@ namespace RegistrationSystem.Entities.Models
         [StringLength(20)]
         public UserRole Role { get; set; }
 
-        public int UserInfoId { get; set; }
-
+        //[InverseProperty("Account")]
+        //public int UserInfoId { get; set; }
        
         [InverseProperty("Account")]
         public UserInfo UserInfo { get; set; } = null!;

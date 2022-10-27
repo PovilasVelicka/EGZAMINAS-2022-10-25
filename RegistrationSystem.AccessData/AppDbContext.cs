@@ -25,6 +25,13 @@ namespace RegistrationSystem.AccessData
 
 
             });
+
+            modelBuilder.Entity<Address>(entity =>
+            {
+                entity.HasMany(u => u.UserInfos)
+                .WithOne(u => u.Address)
+                .OnDelete(DeleteBehavior.NoAction);
+            });
         }
     }
 }

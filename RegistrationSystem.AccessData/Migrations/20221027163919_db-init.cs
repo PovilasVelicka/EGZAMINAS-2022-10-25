@@ -13,6 +13,23 @@ namespace RegistrationSystem.AccessData.Migrations
                 name: "RegistrationSystem");
 
             migrationBuilder.CreateTable(
+                name: "Accounts",
+                schema: "RegistrationSystem",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LoginName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    PasswordHash = table.Column<byte[]>(type: "varbinary(460)", maxLength: 460, nullable: false),
+                    PasswordSalt = table.Column<byte[]>(type: "varbinary(460)", maxLength: 460, nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    UserInfoId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Accounts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Addresses",
                 schema: "RegistrationSystem",
                 columns: table => new
@@ -41,11 +58,20 @@ namespace RegistrationSystem.AccessData.Migrations
                     PersonalCode = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Photo = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    AccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AddressId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserInfos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserInfos_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalSchema: "RegistrationSystem",
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserInfos_Addresses_AddressId",
                         column: x => x.AddressId,
@@ -55,37 +81,12 @@ namespace RegistrationSystem.AccessData.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Accounts",
-                schema: "RegistrationSystem",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LoginName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Password = table.Column<byte[]>(type: "varbinary(460)", maxLength: 460, nullable: false),
-                    Salt = table.Column<byte[]>(type: "varbinary(460)", maxLength: 460, nullable: false),
-                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Photo = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    UserInfoId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Accounts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Accounts_UserInfos_UserInfoId",
-                        column: x => x.UserInfoId,
-                        principalSchema: "RegistrationSystem",
-                        principalTable: "UserInfos",
-                        principalColumn: "Id");
-                });
-
             migrationBuilder.CreateIndex(
-                name: "IX_Accounts_UserInfoId",
+                name: "IX_UserInfos_AccountId",
                 schema: "RegistrationSystem",
-                table: "Accounts",
-                column: "UserInfoId",
-                unique: true,
-                filter: "[UserInfoId] IS NOT NULL");
+                table: "UserInfos",
+                column: "AccountId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserInfos_AddressId",
@@ -97,11 +98,11 @@ namespace RegistrationSystem.AccessData.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Accounts",
+                name: "UserInfos",
                 schema: "RegistrationSystem");
 
             migrationBuilder.DropTable(
-                name: "UserInfos",
+                name: "Accounts",
                 schema: "RegistrationSystem");
 
             migrationBuilder.DropTable(

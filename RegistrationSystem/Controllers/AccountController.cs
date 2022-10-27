@@ -19,6 +19,29 @@ namespace RegistrationSystem.Controllers
             _accountService = accountService;
         }
 
+        #region Admin end points
+
+        [HttpGet("admin/users/{searchText}")]
+        [AuthorizeRoles(UserRole.Admin)]
+        public async Task<IActionResult> GetUsers (string searchText)
+        {
+            var response = await _accountService.GetUsersAsync(this.GetUserGuid( ), searchText);
+            var users = response.Object?.Select(u => new AdminUserInfoResponse(u));
+            return StatusCode(response.StatuCode, users);
+        }
+
+        [HttpDelete("admin/delete-user")]
+        [AuthorizeRoles(UserRole.Admin)]
+        public async Task<IActionResult> DeleteUser ([FromForm] Guid userGuid)
+        {
+            var response = await _accountService.DeleteAccountAsync(this.GetUserGuid( ), userGuid);
+            return StatusCode(response.StatuCode, response.Message);
+        }
+
+        #endregion
+
+        #region User end points
+
         [HttpGet("details")]
         public async Task<IActionResult> GetUserInfo ( )
         {
@@ -100,21 +123,6 @@ namespace RegistrationSystem.Controllers
             return StatusCode(response.StatuCode, response.Message);
         }
 
-        [HttpDelete("admin/delete-user")]
-        [AuthorizeRoles(UserRole.Admin)]
-        public async Task<IActionResult> DeleteUser ([FromForm] Guid userGuid)
-        {
-            var response = await _accountService.DeleteAccountAsync(this.GetUserGuid( ), userGuid);
-            return StatusCode(response.StatuCode, response.Message);
-        }
-
-        [HttpGet("admin/users/{searchText}")]
-        [AuthorizeRoles(UserRole.Admin)]
-        public async Task<IActionResult> GetUsers (string searchText)
-        {
-            var response = await _accountService.GetUsersAsync(this.GetUserGuid( ), searchText);
-            var users = response.Object?.Select(u => new AdminUserInfoResponse(u));
-            return StatusCode(response.StatuCode, users);
-        }
+        #endregion
     }
 }
