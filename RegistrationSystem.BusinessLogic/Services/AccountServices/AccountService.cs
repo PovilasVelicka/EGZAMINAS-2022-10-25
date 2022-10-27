@@ -97,22 +97,30 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
                 (int)HttpStatusCode.Created);
         }
 
-        public async Task<IServiceResponseDto<Account>> GetUserInfoAsync (Guid accountId)
+        public async Task<IServiceResponseDto<Account>> GetUserInfoAsync (Guid userGuid)
         {
-            var account = await _accountsRepository.GetAsync(accountId);
+            var account = await _accountsRepository.GetAsync(userGuid);
+
             return new ServiceResponseDto<Account>(account);
         }
 
-        public async Task<IServiceResponseDto<string>> DeleteAccountAsync (Guid accountId, Guid userId)
+        public async Task<IServiceResponseDto<List<Account>>> GetUsersAsync (Guid adminGuid, string searchSubstring)
         {
-            var account = await _accountsRepository.GetAsync(accountId);
+            var accounts = await _accountsRepository.GetAllAsync(searchSubstring);
+
+            return new ServiceResponseDto<List<Account>>(accounts);
+        }
+
+        public async Task<IServiceResponseDto<string>> DeleteAccountAsync (Guid adminGuid, Guid userGuid)
+        {
+            var account = await _accountsRepository.GetAsync(adminGuid);
 
             if (account.Role != UserRole.Admin)
             {
                 return new ServiceResponseDto<string>("You do not have permissions to delete user");
             }
 
-            if (await _accountsRepository.DeleteAsync(userId))
+            if (await _accountsRepository.DeleteAsync(userGuid))
             {
                 return new ServiceResponseDto<string>(true, "Account deleted successfuly");
             }
@@ -122,10 +130,10 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             }
         }
 
-        public async Task<IServiceResponseDto<Account>> UpdateUserInfoAsync (Guid accountId, IUserInfoDto userInfo)
+        public async Task<IServiceResponseDto<Account>> UpdateUserInfoAsync (Guid userGuid, IUserInfoDto userInfo)
         {
 
-            var account = await _accountsRepository.GetAsync(accountId);
+            var account = await _accountsRepository.GetAsync(userGuid);
 
             await MapUserInfo(account, userInfo);
 
@@ -184,5 +192,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
                 },
             };
         }
+
+
     }
 }
