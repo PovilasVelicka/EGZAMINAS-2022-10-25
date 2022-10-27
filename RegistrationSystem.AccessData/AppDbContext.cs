@@ -22,6 +22,8 @@ namespace RegistrationSystem.AccessData
                     .HasConversion(
                 u => u.ToString( ),
                 d => (UserRole)Enum.Parse(typeof(UserRole), d));
+
+
             });
         }
     }
