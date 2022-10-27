@@ -5,6 +5,7 @@ using RegistrationSystem.Common.Interfaces.AccessData;
 using RegistrationSystem.Entities.Enums;
 using RegistrationSystem.Entities.Models;
 using System.Net;
+using System.Security.AccessControl;
 using Utilites.Exstensions;
 
 namespace RegistrationSystem.BusinessLogic.Services.AccountServices
@@ -106,6 +107,8 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
         public async Task<IServiceResponseDto<List<Account>>> GetUsersAsync (Guid adminGuid, string searchSubstring)
         {
+            if (!await IsUserAdmin(adminGuid)) return new ServiceResponseDto<List<Account>>("You do not have permissions to view users");
+
             var accounts = await _accountsRepository.GetAllAsync(searchSubstring);
 
             return new ServiceResponseDto<List<Account>>(accounts);
@@ -113,12 +116,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
         public async Task<IServiceResponseDto<string>> DeleteAccountAsync (Guid adminGuid, Guid userGuid)
         {
-            var account = await _accountsRepository.GetAsync(adminGuid);
-
-            if (account.Role != UserRole.Admin)
-            {
-                return new ServiceResponseDto<string>("You do not have permissions to delete user");
-            }
+            if (!await IsUserAdmin(adminGuid))  return new ServiceResponseDto<string>("You do not have permissions to delete user");            
 
             if (await _accountsRepository.DeleteAsync(userGuid))
             {
@@ -126,7 +124,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             }
             else
             {
-                return new ServiceResponseDto<string>(false, "Account not find");
+                return new ServiceResponseDto<string>(false, "Account not found");
             }
         }
 
@@ -134,6 +132,8 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
         {
 
             var account = await _accountsRepository.GetAsync(userGuid);
+
+            if(account == null) return new ServiceResponseDto<Account>("User not found");
 
             await MapUserInfo(account, userInfo);
 
@@ -195,6 +195,13 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             };
         }
 
+        private async Task<bool> IsUserAdmin (Guid adminGuid)
+        {
+            var account = await _accountsRepository.GetAsync(adminGuid);
 
+            if (account == null || account.Role == UserRole.Admin) return true;
+
+            return false;
+        }
     }
 }

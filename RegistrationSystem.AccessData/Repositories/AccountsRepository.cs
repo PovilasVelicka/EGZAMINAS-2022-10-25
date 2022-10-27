@@ -52,20 +52,14 @@ namespace RegistrationSystem.AccessData.Repositories
                 .ToListAsync( );
         }
 
-        public async Task<Account> GetAsync (Guid id)
+        public async Task<Account?> GetAsync (Guid userGuid)
         {
-            return await AccountsQuery( ).SingleAsync(a => a.Id.Equals(id));
+            return await AccountsQuery( ).SingleOrDefaultAsync(a => a.Id.Equals(userGuid));
         }
 
         public async Task<Account?> GetByLoginAsync (string userLogin)
         {
             var account = await AccountsQuery( ).SingleOrDefaultAsync(a => a.LoginName == userLogin);
-            return account;
-        }
-
-        public async Task<Account> GetByUserIdAsync (int id)
-        {
-            var account = await AccountsQuery( ).SingleAsync(u => u.UserInfoId == id);
             return account;
         }
 

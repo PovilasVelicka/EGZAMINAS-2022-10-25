@@ -11,9 +11,7 @@ namespace RegistrationSystem.Common.Interfaces.AccessData
 
         Task<bool> DeleteAsync (Guid id);
 
-        Task<Account> GetAsync (Guid id);
-
-        Task<Account> GetByUserIdAsync (int id);
+        Task<Account?> GetAsync (Guid id);
 
         Task<List<Account>> GetAllAsync ( );
 
