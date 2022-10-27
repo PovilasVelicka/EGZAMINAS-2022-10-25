@@ -13,5 +13,6 @@
         string? HouseNumber { get; }
         string? AppartmentNumber { get; }
         bool IsAllPropertiesNotEmpty ( );
+        //bool IsAnyProperti
     }
 }

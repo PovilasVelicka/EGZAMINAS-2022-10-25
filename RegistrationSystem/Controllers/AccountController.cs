@@ -3,6 +3,7 @@ using RegistrationSystem.BusinessLogic.Services.AccountServices;
 using RegistrationSystem.Controllers.Attributes;
 using RegistrationSystem.Controllers.DTOs;
 using RegistrationSystem.Controllers.Extensions;
+using RegistrationSystem.Entities.Enums;
 
 namespace RegistrationSystem.Controllers
 {
@@ -98,6 +99,22 @@ namespace RegistrationSystem.Controllers
         {
             var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { AppartmentNumber = appartmentNumber });
             return StatusCode(response.StatuCode, response.Message);
+        }
+
+        [HttpDelete("admin/delete-user")]
+        [AuthorizeRoles(UserRole.Admin)]
+        public async Task<IActionResult> DeleteUserAsync ([FromForm] Guid userGuid)
+        {
+            var response = await _accountService.DeleteAccountAsync(this.GetUserGuid(), userGuid);
+
+            return StatusCode(response.StatuCode, response.Message);
+        }
+
+        [HttpGet("admin/users")]
+        [AuthorizeRoles(UserRole.Admin)]
+        public async Task<IActionResult> GetUsers ([FromForm] string searchText)
+        {
+
         }
     }
 }
