@@ -137,6 +137,8 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
             await MapUserInfo(account, userInfo);
 
+            await _accountsRepository.UpdateAsync(account);
+
             return new ServiceResponseDto<Account>(account);
         }
 

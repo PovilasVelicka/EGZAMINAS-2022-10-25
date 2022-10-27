@@ -19,7 +19,7 @@ namespace RegistrationSystem.Entities.Models
 
         public int UserInfoId { get; set; }
 
-        [ForeignKey("UserInfoId")]
+       
         [InverseProperty("Account")]
         public UserInfo UserInfo { get; set; } = null!;
     }
