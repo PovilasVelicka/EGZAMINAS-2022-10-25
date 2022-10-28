@@ -1,13 +1,11 @@
-﻿using RegistrationSystem.BusinessLogic.DTOs;
-using RegistrationSystem.Entities.Enums;
+﻿using RegistrationSystem.Entities.Enums;
 using RegistrationSystem.Entities.Models;
-using System.IO;
 
 namespace RegistrationSystem.Controllers.DTOs
 {
     public class AdminUserInfoResponse
     {
-        public Guid Id { get;  }
+        public Guid Id { get; }
         public string LoginName { get; } = null!;
         public UserRole Role { get; }
         public string FirstName { get; } = null!;
@@ -15,15 +13,15 @@ namespace RegistrationSystem.Controllers.DTOs
         public string Phone { get; } = null!;
         public string Email { get; } = null!;
         public AdminUserInfoResponse ( ) { }
-        public AdminUserInfoResponse (Account responseDto)
+        public AdminUserInfoResponse (Account account)
         {
-            Id = responseDto.Id;
-            LoginName = responseDto.LoginName;
-            Role = responseDto.Role;
-            FirstName = responseDto.UserInfo.FirstName;
-            LastName = responseDto.UserInfo.LastName;          
-            Phone = responseDto.UserInfo.Phone;
-            Email = responseDto.UserInfo.Email;           
+            Id = account.Id;
+            LoginName = account.LoginName;
+            Role = account.Role;
+            FirstName = account.UserInfo.FirstName;
+            LastName = account.UserInfo.LastName;
+            Phone = account.UserInfo.Phone;
+            Email = account.UserInfo.Email;
         }
     }
 }

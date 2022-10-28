@@ -4,7 +4,6 @@ using RegistrationSystem.Controllers.Attributes;
 using RegistrationSystem.Controllers.DTOs;
 using RegistrationSystem.Controllers.DTOs.UserInfoRequestDto;
 using RegistrationSystem.Controllers.Extensions;
-using RegistrationSystem.Controllers.Validations;
 using RegistrationSystem.Entities.Enums;
 
 namespace RegistrationSystem.Controllers
@@ -77,11 +76,11 @@ namespace RegistrationSystem.Controllers
         [HttpPatch("change/phone-number")]
         public async Task<IActionResult> UpdatePhoneNumber ([FromQuery] PhoneRequest phoneNumber)
         {
-            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { Phone = phoneNumber.Phone});
+            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { Phone = phoneNumber.Phone });
             return StatusCode(response.StatuCode, response.Message);
         }
 
-        [HttpPatch("change/email")]     
+        [HttpPatch("change/email")]
         public async Task<IActionResult> UpdateEmail ([FromForm] EmailRequest emailRequest)
         {
             var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { Email = emailRequest.Email });
