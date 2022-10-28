@@ -16,9 +16,6 @@ namespace RegistrationSystem.Entities.Models
         public byte[ ] PasswordSalt { get; set; } = null!;
         [StringLength(20)]
         public UserRole Role { get; set; }
-
-        //[InverseProperty("Account")]
-        //public int UserInfoId { get; set; }
        
         [InverseProperty("Account")]
         public UserInfo UserInfo { get; set; } = null!;

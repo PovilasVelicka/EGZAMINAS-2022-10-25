@@ -8,7 +8,7 @@ namespace RegistrationSystem.Controllers.DTOs
     {
         [AllowedInputString]
         public string LoginName { get; set; } = null!;
-        [AllowedInputString]
+        [AllowedPasswords]
         public string Password { get; set; } = null!;
         [AllowedInputString]
         public string FirstName { get; set; } = null!;
