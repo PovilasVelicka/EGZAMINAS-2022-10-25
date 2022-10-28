@@ -14,7 +14,7 @@ namespace RegistrationSystem.Controllers.Validations
                 if (!capitalExists
                  || !lowerExists
                  || !digitsExists
-                 || password.ToCharArray( ).Count( ) < 6)
+                 || password.ToCharArray( ).Length < 6)
                     return new ValidationResult("Invalid password structure. Password must contain uppercase, lowercase and numeric characters");
 
             }

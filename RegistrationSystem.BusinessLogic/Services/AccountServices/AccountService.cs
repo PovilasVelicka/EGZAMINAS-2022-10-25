@@ -146,17 +146,19 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
         private async Task MapUserInfo (Account account, IUserInfoDto userInfo)
         {
-            if (!string.IsNullOrWhiteSpace(userInfo.Phone)) account.UserInfo.Phone = userInfo.Phone;
-            if (!string.IsNullOrWhiteSpace(userInfo.Email)) account.UserInfo.Email = userInfo.Email;
-            if (!string.IsNullOrWhiteSpace(userInfo.LastName)) account.UserInfo.LastName = userInfo.LastName;
-            if (!string.IsNullOrWhiteSpace(userInfo.FirstName)) account.UserInfo.FirstName = userInfo.FirstName;
-            if (!string.IsNullOrWhiteSpace(userInfo.PersonalCode)) account.UserInfo.PersonalCode = userInfo.PersonalCode;
-            if (userInfo.ProfilePicture != null) account.UserInfo.ProfilePicture = ResizeImage(userInfo.ProfilePicture, userInfo.ContentType!, 200, 200);
+            account.UserInfo.Phone = userInfo.Phone ?? account.UserInfo.Phone;
+            account.UserInfo.Email = userInfo.Email ?? account.UserInfo.Email;
+            account.UserInfo.LastName = userInfo.LastName ?? account.UserInfo.LastName;
+            account.UserInfo.FirstName = userInfo.FirstName ?? account.UserInfo.FirstName;
+            account.UserInfo.PersonalCode = userInfo.PersonalCode ?? account.UserInfo.PersonalCode;
+            if (userInfo.ProfilePicture != null)
+                account.UserInfo.ProfilePicture =
+                    ResizeImage(userInfo.ProfilePicture, userInfo.ContentType!, 200, 200);
 
-            var city = string.IsNullOrWhiteSpace(userInfo.City) ? account.UserInfo.Address.City : userInfo.City;
-            var street = string.IsNullOrWhiteSpace(userInfo.Street) ? account.UserInfo.Address.Street : userInfo.Street;
-            var houseNumber = string.IsNullOrWhiteSpace(userInfo.HouseNumber) ? account.UserInfo.Address.HouseNumber : userInfo.HouseNumber;
-            var appartmentNumber = string.IsNullOrWhiteSpace(userInfo.AppartmentNumber) ? account.UserInfo.Address.AppartmentNumber : userInfo.AppartmentNumber;
+            var city = userInfo.City ?? account.UserInfo.Address.City;
+            var street = userInfo.Street ?? account.UserInfo.Address.Street;
+            var houseNumber = userInfo.HouseNumber ?? account.UserInfo.Address.HouseNumber;
+            var appartmentNumber = userInfo.AppartmentNumber ?? account.UserInfo.Address.AppartmentNumber;
 
 
             var existsAddres = await _addressesRepository.FindAddressAsync(
@@ -165,20 +167,14 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
                 houseNumber,
                 appartmentNumber);
 
-            if (existsAddres != null)
-            {
-                account.UserInfo.Address = existsAddres;
-            }
-            else
-            {
-                account.UserInfo.Address = new( )
+            account.UserInfo
+                .Address = existsAddres ?? new( )
                 {
                     City = city,
                     Street = street,
                     HouseNumber = houseNumber,
                     AppartmentNumber = appartmentNumber
                 };
-            }
         }
 
         private static Account CreateAccount (string loginName, string password, UserRole role)
