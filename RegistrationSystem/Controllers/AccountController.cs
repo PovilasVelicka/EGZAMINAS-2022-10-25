@@ -3,10 +3,13 @@ using RegistrationSystem.BusinessLogic.Services.AccountServices;
 using RegistrationSystem.Controllers.Attributes;
 using RegistrationSystem.Controllers.DTOs;
 using RegistrationSystem.Controllers.Extensions;
+using RegistrationSystem.Controllers.Validations;
 using RegistrationSystem.Entities.Enums;
 
 namespace RegistrationSystem.Controllers
 {
+
+
     [Route("api/registration-system/user")]
     [ApiController]
     [DenyRoles( )]
@@ -78,6 +81,7 @@ namespace RegistrationSystem.Controllers
         }
 
         [HttpPatch("change/email")]
+        [EmailValidate]
         public async Task<IActionResult> UpdateEmail ([FromForm] string email)
         {
             var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { Email = email });
@@ -85,6 +89,8 @@ namespace RegistrationSystem.Controllers
         }
 
         [HttpPatch("change/profile-picture")]
+        [AllowedExtensions(new string[ ] { ".jpg", ".jpeg", ".png", ".gif" })]
+        [MaxFileSize(1024 * 1024 * 256)]
         public async Task<IActionResult> UpdateProfilePicture (IFormFile profilePicture)
         {
             var userInfoDto = new UserInfoDto( );

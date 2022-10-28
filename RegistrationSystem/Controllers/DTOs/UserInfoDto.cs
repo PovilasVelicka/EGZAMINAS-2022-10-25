@@ -57,15 +57,15 @@ namespace RegistrationSystem.Controllers.DTOs
         public bool IsAnyPropertyNotEmpty ( )
         {
             return FirstName != null
-                  || LastName != null
-                  || PersonalCode != null
-                  || Phone != null
-                  || Email != null
-                  || City != null
-                  || Street != null
-                  || HouseNumber != null
-                  || AppartmentNumber != null
-                  || ProfilePicture != null;
+                || LastName != null
+                || PersonalCode != null
+                || Phone != null
+                || Email != null
+                || City != null
+                || Street != null
+                || HouseNumber != null
+                || AppartmentNumber != null
+                || ProfilePicture != null;
         }
     }
 }
