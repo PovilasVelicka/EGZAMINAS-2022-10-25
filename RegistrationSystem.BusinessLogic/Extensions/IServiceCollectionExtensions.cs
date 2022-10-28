@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using RegistrationSystem.BusinessLogic.Services.AccountServices;
 using RegistrationSystem.BusinessLogic.Services.AuthServices;
-
+using System.Runtime.Versioning;
 using System.Text;
 
 namespace RegistrationSystem.BusinessLogic.Extensions
@@ -32,7 +32,7 @@ namespace RegistrationSystem.BusinessLogic.Extensions
 
             return services;
         }
-
+        [SupportedOSPlatform("windows")]
         public static IServiceCollection AddServices (this IServiceCollection services)
         {
             services.AddScoped<IAccountService, AccountService>( );

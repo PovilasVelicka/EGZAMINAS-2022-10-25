@@ -3,6 +3,8 @@ using RegistrationSystem.AccessData.Extensions;
 using RegistrationSystem.BusinessLogic.Extensions;
 using System.Text.Json.Serialization;
 
+[assembly: System.Runtime.Versioning.SupportedOSPlatformAttribute("windows")]
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers( );

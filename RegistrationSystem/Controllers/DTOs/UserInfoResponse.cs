@@ -36,7 +36,7 @@ namespace RegistrationSystem.Controllers.DTOs
             Street = obj.UserInfo.Address.Street;
             HouseNumber = obj.UserInfo.Address.HouseNumber;
             AppartmentNumber = obj.UserInfo.Address.AppartmentNumber;
-            ProfilePicture = obj.UserInfo.Photo;
+            ProfilePicture = obj.UserInfo.ProfilePicture;
         }
     }
 }

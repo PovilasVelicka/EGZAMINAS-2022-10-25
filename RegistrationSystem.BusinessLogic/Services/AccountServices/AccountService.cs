@@ -4,12 +4,15 @@ using RegistrationSystem.BusinessLogic.Services.AuthServices;
 using RegistrationSystem.Common.Interfaces.AccessData;
 using RegistrationSystem.Entities.Enums;
 using RegistrationSystem.Entities.Models;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Net;
-using System.Security.AccessControl;
+using System.Runtime.Versioning;
 using Utilites.Exstensions;
 
 namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 {
+    [SupportedOSPlatform("windows")]
     internal class AccountService : IAccountService
     {
         private readonly IAccountsRepository _accountsRepository;
@@ -116,7 +119,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
         public async Task<IServiceResponseDto<string>> DeleteAccountAsync (Guid adminGuid, Guid userGuid)
         {
-            if (!await IsUserAdmin(adminGuid))  return new ServiceResponseDto<string>("You do not have permissions to delete user");            
+            if (!await IsUserAdmin(adminGuid)) return new ServiceResponseDto<string>("You do not have permissions to delete user");
 
             if (await _accountsRepository.DeleteAsync(userGuid))
             {
@@ -130,10 +133,9 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
         public async Task<IServiceResponseDto<Account>> UpdateUserInfoAsync (Guid userGuid, IUserInfoDto userInfo)
         {
-
             var account = await _accountsRepository.GetAsync(userGuid);
 
-            if(account == null) return new ServiceResponseDto<Account>("User not found");
+            if (account == null) return new ServiceResponseDto<Account>("User not found");
 
             await MapUserInfo(account, userInfo);
 
@@ -149,7 +151,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             if (!string.IsNullOrWhiteSpace(userInfo.LastName)) account.UserInfo.LastName = userInfo.LastName;
             if (!string.IsNullOrWhiteSpace(userInfo.FirstName)) account.UserInfo.FirstName = userInfo.FirstName;
             if (!string.IsNullOrWhiteSpace(userInfo.PersonalCode)) account.UserInfo.PersonalCode = userInfo.PersonalCode;
-            if (userInfo.ProfilePicture != null) account.UserInfo.Photo = userInfo.ProfilePicture;
+            if (userInfo.ProfilePicture != null) account.UserInfo.ProfilePicture = ResizeImage(userInfo.ProfilePicture, userInfo.ContentType!, 200, 200);
 
             var city = string.IsNullOrWhiteSpace(userInfo.City) ? account.UserInfo.Address.City : userInfo.City;
             var street = string.IsNullOrWhiteSpace(userInfo.Street) ? account.UserInfo.Address.Street : userInfo.Street;
@@ -169,11 +171,13 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             }
             else
             {
-                account.UserInfo.Address = new( );
-                account.UserInfo.Address.City = city;
-                account.UserInfo.Address.Street = street;
-                account.UserInfo.Address.HouseNumber = houseNumber;
-                account.UserInfo.Address.AppartmentNumber = appartmentNumber;
+                account.UserInfo.Address = new( )
+                {
+                    City = city,
+                    Street = street,
+                    HouseNumber = houseNumber,
+                    AppartmentNumber = appartmentNumber
+                };
             }
         }
 
@@ -198,10 +202,28 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
         private async Task<bool> IsUserAdmin (Guid adminGuid)
         {
             var account = await _accountsRepository.GetAsync(adminGuid);
-
             if (account == null || account.Role == UserRole.Admin) return true;
-
             return false;
+        }
+
+        private static byte[ ] ResizeImage (byte[ ] imageBytes, string contentType, int width, int height)
+        {
+            using MemoryStream ms = new( );
+            using var img = Image.FromStream(new MemoryStream(imageBytes));
+            var thumbnail = img.GetThumbnailImage(width, height, null, new IntPtr( ));
+            thumbnail.Save(ms, GetImageFormat(contentType));
+            return ms.ToArray( );
+        }
+
+        private static ImageFormat GetImageFormat (string contentType)
+        {
+            return contentType switch
+            {
+                "image/JPEG" => ImageFormat.Jpeg,
+                "image/PNG" => ImageFormat.Png,
+                "image/GIF" => ImageFormat.Gif,
+                _ => ImageFormat.Jpeg,
+            };
         }
     }
 }

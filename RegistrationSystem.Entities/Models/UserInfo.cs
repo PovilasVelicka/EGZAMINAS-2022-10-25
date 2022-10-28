@@ -17,7 +17,7 @@ namespace RegistrationSystem.Entities.Models
         public string Phone { get; set; } = null!;
         [StringLength(150)]
         public string Email { get; set; } = null!;
-        public byte[ ] Photo { get; set; } = null!;
+        public byte[ ] ProfilePicture { get; set; } = null!;
 
         [ForeignKey("AccountId")]
         [InverseProperty("UserInfo")]
