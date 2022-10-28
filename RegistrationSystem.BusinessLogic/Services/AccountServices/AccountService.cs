@@ -149,7 +149,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             if (!string.IsNullOrWhiteSpace(userInfo.LastName)) account.UserInfo.LastName = userInfo.LastName;
             if (!string.IsNullOrWhiteSpace(userInfo.FirstName)) account.UserInfo.FirstName = userInfo.FirstName;
             if (!string.IsNullOrWhiteSpace(userInfo.PersonalCode)) account.UserInfo.PersonalCode = userInfo.PersonalCode;
-            if (userInfo.Photo != null) account.UserInfo.Photo = userInfo.Photo;
+            if (userInfo.ProfilePicture != null) account.UserInfo.Photo = userInfo.ProfilePicture;
 
             var city = string.IsNullOrWhiteSpace(userInfo.City) ? account.UserInfo.Address.City : userInfo.City;
             var street = string.IsNullOrWhiteSpace(userInfo.Street) ? account.UserInfo.Address.Street : userInfo.Street;

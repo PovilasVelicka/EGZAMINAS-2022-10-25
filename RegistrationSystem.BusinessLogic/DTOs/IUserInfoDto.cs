@@ -7,12 +7,13 @@
         string? PersonalCode { get; }
         string? Phone { get; }
         string? Email { get; }
-        byte[ ]? Photo { get; }
+        byte[ ]? ProfilePicture { get; }
+        string? ContentType { get; }
         string? City { get; }
         string? Street { get; }
         string? HouseNumber { get; }
         string? AppartmentNumber { get; }
         bool IsAllPropertiesNotEmpty ( );
-        //bool IsAnyProperti
+        bool IsAnyPropertyNotEmpty ( );
     }
 }

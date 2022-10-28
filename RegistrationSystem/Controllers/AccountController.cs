@@ -85,13 +85,12 @@ namespace RegistrationSystem.Controllers
         }
 
         [HttpPatch("change/profile-picture")]
-        public async Task<IActionResult> UpdateProfilePicture ([FromForm] IFormFile profilePicture)
+        public async Task<IActionResult> UpdateProfilePicture (IFormFile profilePicture)
         {
-            using var memoryStream = new MemoryStream( );
-            profilePicture.CopyTo(memoryStream);
-            // TODO: CREATE IMAGE SERVICE TO RESIZE IMAGE
+            var userInfoDto = new UserInfoDto( );
+            userInfoDto.SetProfilePicture(profilePicture);
 
-            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { Photo = memoryStream.ToArray( ) });
+            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), userInfoDto);
             return StatusCode(response.StatuCode, response.Message);
         }
 
