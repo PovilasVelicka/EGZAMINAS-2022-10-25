@@ -1,4 +1,5 @@
 ﻿using RegistrationSystem.BusinessLogic.DTOs;
+using RegistrationSystem.Controllers.Validations;
 
 namespace RegistrationSystem.Controllers.DTOs
 {
@@ -22,14 +23,14 @@ namespace RegistrationSystem.Controllers.DTOs
         {
             FirstName = signupRequest.FirstName;
             LastName = signupRequest.LastName;
-            PersonalCode = signupRequest.PersonalCode;
+            PersonalCode = signupRequest.PersonalCode;           
             Email = signupRequest.Email;
             City = signupRequest.City;
             Street = signupRequest.Street;
             HouseNumber = signupRequest.HouseNumber;
             AppartmentNumber = signupRequest.AppartmentNumber;
             Phone = signupRequest.Phone;
-            SetProfilePicture(signupRequest.Image);
+            SetProfilePicture(signupRequest.ProfilePicture);
         }
 
         public void SetProfilePicture (IFormFile file)

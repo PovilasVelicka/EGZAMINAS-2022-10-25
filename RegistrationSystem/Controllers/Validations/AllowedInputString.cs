@@ -1,20 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Utilites.Exstensions;
 
 namespace RegistrationSystem.Controllers.Validations
 {
-    public class AllowedEmailsAttribute : ValidationAttribute
+    public class AllowedInputStringAttribute : ValidationAttribute
     {
         protected override ValidationResult? IsValid (object? value, ValidationContext validationContext)
         {
-            if (value is string email)
+            if (value is string val)
             {
-                if (!email.IsValidEmail( ))
-                {
-                    return new ValidationResult($"Email {email} not valid");
-                }
+                if (string.IsNullOrEmpty(val)) return new ValidationResult("Text cannot be empty");
             }
-
             return ValidationResult.Success;
         }
     }

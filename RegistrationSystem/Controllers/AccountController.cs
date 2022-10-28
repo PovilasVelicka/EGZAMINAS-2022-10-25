@@ -2,6 +2,7 @@
 using RegistrationSystem.BusinessLogic.Services.AccountServices;
 using RegistrationSystem.Controllers.Attributes;
 using RegistrationSystem.Controllers.DTOs;
+using RegistrationSystem.Controllers.DTOs.UserInfoRequestDto;
 using RegistrationSystem.Controllers.Extensions;
 using RegistrationSystem.Controllers.Validations;
 using RegistrationSystem.Entities.Enums;
@@ -53,78 +54,75 @@ namespace RegistrationSystem.Controllers
         }
 
         [HttpPatch("change/first-name")]
-        public async Task<IActionResult> UpdateFirstName ([FromForm] string firstName)
+        public async Task<IActionResult> UpdateFirstName ([FromForm] FirstNameRequest firstNameRequest)
         {
-            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { FirstName = firstName });
+            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { FirstName = firstNameRequest.FirstName });
             return StatusCode(response.StatuCode, response.Message);
         }
 
         [HttpPatch("change/last-name")]
-        public async Task<IActionResult> UpdateLastName ([FromForm] string lastName)
+        public async Task<IActionResult> UpdateLastName ([FromForm] LastNameRequest lastNameRequest)
         {
-            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { LastName = lastName });
+            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { LastName = lastNameRequest.LastName });
             return StatusCode(response.StatuCode, response.Message);
         }
 
         [HttpPatch("change/personal-code")]
-        public async Task<IActionResult> UpdatePersonalCode ([FromForm] string personalCode)
+        public async Task<IActionResult> UpdatePersonalCode ([FromForm] PersonalCodeRequest personalCodeRequest)
         {
-            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { PersonalCode = personalCode });
+            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { PersonalCode = personalCodeRequest.PersonalCode });
             return StatusCode(response.StatuCode, response.Message);
         }
 
         [HttpPatch("change/phone-number")]
-        public async Task<IActionResult> UpdatePhoneNumber ([FromForm] string phoneNumber)
+        public async Task<IActionResult> UpdatePhoneNumber ([FromQuery] PhoneRequest phoneNumber)
         {
-            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { Phone = phoneNumber });
+            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { Phone = phoneNumber.Phone});
             return StatusCode(response.StatuCode, response.Message);
         }
 
-        [HttpPatch("change/email")]
-        [EmailValidate]
-        public async Task<IActionResult> UpdateEmail ([FromForm] string email)
+        [HttpPatch("change/email")]     
+        public async Task<IActionResult> UpdateEmail ([FromForm] EmailRequest emailRequest)
         {
-            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { Email = email });
+            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { Email = emailRequest.Email });
             return StatusCode(response.StatuCode, response.Message);
         }
 
         [HttpPatch("change/profile-picture")]
-        [AllowedExtensions(new string[ ] { ".jpg", ".jpeg", ".png", ".gif" })]
-        [MaxFileSize(1024 * 1024 * 256)]
-        public async Task<IActionResult> UpdateProfilePicture (IFormFile profilePicture)
+        public async Task<IActionResult> UpdateProfilePicture ([FromForm] PersonPictureRequest profilePictureRequest)
         {
             var userInfoDto = new UserInfoDto( );
-            userInfoDto.SetProfilePicture(profilePicture);
+            userInfoDto.SetProfilePicture(profilePictureRequest.FormFile);
 
             var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), userInfoDto);
             return StatusCode(response.StatuCode, response.Message);
         }
 
         [HttpPatch("change/city")]
-        public async Task<IActionResult> UpdateCity ([FromForm] string city)
+        public async Task<IActionResult> UpdateCity ([FromForm] CityRequest cityRequest)
         {
-            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { City = city });
+            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { City = cityRequest.City });
             return StatusCode(response.StatuCode, response.Message);
         }
 
         [HttpPatch("change/street")]
-        public async Task<IActionResult> UpdateStreet ([FromForm] string street)
+        public async Task<IActionResult> UpdateStreet ([FromForm] StreetRequest streetRequest)
         {
-            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { Street = street });
+            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { Street = streetRequest.Street });
             return StatusCode(response.StatuCode, response.Message);
         }
 
         [HttpPatch("change/house-number")]
-        public async Task<IActionResult> UpdateHouseNumber ([FromForm] string houseNumber)
+        public async Task<IActionResult> UpdateHouseNumber ([FromForm] HouseNumberRequest houseNumberRequest)
         {
-            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { HouseNumber = houseNumber });
+            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { HouseNumber = houseNumberRequest.HouseNumber });
             return StatusCode(response.StatuCode, response.Message);
         }
 
         [HttpPatch("change/appartment-number")]
-        public async Task<IActionResult> UpdateAppartmentNumber ([FromForm] string appartmentNumber)
+        public async Task<IActionResult> UpdateAppartmentNumber ([FromForm] AppartmentNumberRequest appartmentNumberRequest)
         {
-            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { AppartmentNumber = appartmentNumber });
+            var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { AppartmentNumber = appartmentNumberRequest.AppartmentNumber });
             return StatusCode(response.StatuCode, response.Message);
         }
 
