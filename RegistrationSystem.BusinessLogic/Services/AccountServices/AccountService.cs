@@ -72,28 +72,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
             await MapUserInfo(account, userInfo);
 
-            try
-            {
-                await _accountsRepository.AddAsync(account);
-            }
-            catch (Exception e)
-            {
-                string errMessage = $"Can't create user with: " +
-                    $"\n\tlogin-name: {loginName}" +
-                    $"\n\terror: {e.Message} {e.InnerException}";
-                _logger.LogError(message: errMessage);
-
-                return new ServiceResponseDto<string>(
-                    null,
-                    e.InnerException?.Message ?? "Unexpected error",
-                    (int)HttpStatusCode.ServiceUnavailable);
-            }
-
-            _logger.Log(
-               LogLevel.Information,
-               $"New user created: " +
-               $"\n\tId: {account.Id}" +
-               $"\n\tName: {account.LoginName}");
+            await _accountsRepository.AddAsync(account);
 
             return new ServiceResponseDto<string>(
                 _jwtService.GetJwtToken(account),
@@ -118,23 +97,12 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
         }
 
         public async Task<IServiceResponseDto<string>> DeleteAccountAsync (Guid adminGuid, Guid userGuid)
-        {           
-
+        {
             if (!await IsUserAdmin(adminGuid)) return new ServiceResponseDto<string>("You do not have permissions to delete user");
 
-            if (await _accountsRepository.DeleteAsync(userGuid))
-            {
-                return new ServiceResponseDto<string>(true, "Account deleted successfuly");
-            }
-            else
-            {
-                throw new KeyNotFoundException(
-                    $"AdminGuid: {adminGuid}\t" +
-                    $"Method: DeleteAccountAsync\t" +
-                    $"UserGuid: {userGuid}\t" +
-                    $"Error: not found");
-                //return new ServiceResponseDto<string>(false, "Account not found");
-            }
+            await _accountsRepository.DeleteAsync(userGuid);
+
+            return new ServiceResponseDto<string>(true, "Account deleted successfuly");
         }
 
         public async Task<IServiceResponseDto<Account>> UpdateUserInfoAsync (Guid userGuid, IUserInfoDto userInfo)

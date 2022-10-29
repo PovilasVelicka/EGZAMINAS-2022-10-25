@@ -26,13 +26,11 @@ namespace RegistrationSystem.AccessData.Repositories
             return await _context.Accounts.CountAsync(a => a.Role == role);
         }
 
-        public async Task<bool> DeleteAsync (Guid id)
+        public async Task DeleteAsync (Guid id)
         {
-            var account = await GetAsync(id);
-            if (account == null) return false;
+            var account = await GetAsync(id);           
             _context.Accounts.Remove(account);
-            await _context.SaveChangesAsync( );
-            return true;
+            await _context.SaveChangesAsync( );          
         }
 
         public async Task<List<Account>> GetAllAsync ( )
@@ -52,9 +50,9 @@ namespace RegistrationSystem.AccessData.Repositories
                 .ToListAsync( );
         }
 
-        public async Task<Account?> GetAsync (Guid userGuid)
+        public async Task<Account> GetAsync (Guid userGuid)
         {
-            return await AccountsQuery( ).SingleOrDefaultAsync(a => a.Id.Equals(userGuid));
+            return await AccountsQuery( ).SingleAsync(a => a.Id.Equals(userGuid));
         }
 
         public async Task<Account?> GetByLoginAsync (string userLogin)

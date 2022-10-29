@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RegistrationSystem.BusinessLogic.Services.AccountServices;
 using RegistrationSystem.Controllers.DTOs;
+using RegistrationSystem.Controllers.Extensions;
 
 namespace RegistrationSystem.Controllers
 {
@@ -21,7 +22,7 @@ namespace RegistrationSystem.Controllers
         {
             var response = await _accountService.LoginAsync(loginRequest.LoginName, loginRequest.Password);
 
-            return StatusCode(response.StatuCode, new LoginResponse<string>(response));
+            return this.MapServiceDto(response,response.Object);           
         }
 
         [HttpPost("signup")]
@@ -31,7 +32,7 @@ namespace RegistrationSystem.Controllers
 
             var response = await _accountService.SignupAccountAsync(signupRequest.LoginName, signupRequest.Password, userDto);
 
-            return StatusCode(response.StatuCode, new LoginResponse<string>(response));
+            return this.MapServiceDto(response, response.Object);
         }
     }
 }

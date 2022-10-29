@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RegistrationSystem.BusinessLogic.DTOs;
+using RegistrationSystem.Controllers.DTOs;
 using System.Security.Claims;
 
 namespace RegistrationSystem.Controllers.Extensions
@@ -18,6 +20,36 @@ namespace RegistrationSystem.Controllers.Extensions
             {
                 throw new KeyNotFoundException($"ControllerBaseExeption, no GuidId found in Claim NameIdentifier");
             }
+        }
+
+        public static ObjectResult MapServiceDto<K, T> (this ControllerBase controller, IServiceResponseDto<K> responseDto, T? responseObj)
+        {
+            ObjectResult objectResult;
+
+            if (responseDto.IsSuccess)
+            {
+                objectResult = new(
+                    new SuccessResponse<T>
+                    {
+                        IsSuccess = responseDto.IsSuccess,
+                        StatusCode = responseDto.StatuCode,
+                        Message = responseDto.Message,
+                        Payload = responseObj
+                    });
+            }
+            else
+            {
+                objectResult = new(
+                  new ErrorResponse
+                  {
+                      IsSuccess = responseDto.IsSuccess,
+                      StatusCode = responseDto.StatuCode,
+                      Message = responseDto.Message,
+                  });
+            }
+           
+            objectResult.StatusCode = responseDto.StatuCode;
+            return objectResult;
         }
     }
 }
