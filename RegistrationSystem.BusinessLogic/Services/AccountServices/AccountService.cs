@@ -118,7 +118,8 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
         }
 
         public async Task<IServiceResponseDto<string>> DeleteAccountAsync (Guid adminGuid, Guid userGuid)
-        {
+        {           
+
             if (!await IsUserAdmin(adminGuid)) return new ServiceResponseDto<string>("You do not have permissions to delete user");
 
             if (await _accountsRepository.DeleteAsync(userGuid))
@@ -127,7 +128,12 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             }
             else
             {
-                return new ServiceResponseDto<string>(false, "Account not found");
+                throw new KeyNotFoundException(
+                    $"AdminGuid: {adminGuid}\t" +
+                    $"Method: DeleteAccountAsync\t" +
+                    $"UserGuid: {userGuid}\t" +
+                    $"Error: not found");
+                //return new ServiceResponseDto<string>(false, "Account not found");
             }
         }
 

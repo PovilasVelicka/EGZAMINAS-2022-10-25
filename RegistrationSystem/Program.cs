@@ -1,6 +1,7 @@
 using Microsoft.OpenApi.Models;
 using RegistrationSystem.AccessData.Extensions;
 using RegistrationSystem.BusinessLogic.Extensions;
+using RegistrationSystem.Controllers.Middleware;
 using System.Text.Json.Serialization;
 
 [assembly: System.Runtime.Versioning.SupportedOSPlatformAttribute("windows")]
@@ -43,7 +44,7 @@ builder.Services.AddSwaggerGen(opions =>
                     Id="Bearer"
                 }
             },
-            new string[]{ }
+            Array.Empty<string>( )
         }
     });
 });
@@ -59,9 +60,12 @@ if (app.Environment.IsDevelopment( ))
     app.UseSwaggerUI( );
 }
 
+app.UseMiddleware<ExceptionHandlingMiddleware>( );
+
 app.UseHttpsRedirection( );
 
 app.UseAuthentication( );
+
 app.UseAuthorization( );
 
 app.MapControllers( );

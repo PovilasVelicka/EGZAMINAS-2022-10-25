@@ -37,6 +37,7 @@ namespace RegistrationSystem.Controllers
         [AuthorizeRoles(UserRole.Admin)]
         public async Task<IActionResult> DeleteUser ([FromForm] Guid userGuid)
         {
+            
             var response = await _accountService.DeleteAccountAsync(this.GetUserGuid( ), userGuid);
             return StatusCode(response.StatuCode, response.Message);
         }
