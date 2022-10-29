@@ -6,7 +6,8 @@ namespace RegistrationSystem.Entities.Models
     [Table("UserInfos", Schema = "RegistrationSystem")]
     public class UserInfo
     {
-        public int Id { get; set; }
+        [Key]
+        public Guid Id { get; set; }
         [StringLength(150)]
         public string FirstName { get; set; } = null!;
         [StringLength(150)]
@@ -19,7 +20,8 @@ namespace RegistrationSystem.Entities.Models
         public string Email { get; set; } = null!;
         public byte[ ] ProfilePicture { get; set; } = null!;
 
-        [ForeignKey("AccountId")]
+        
+        [ForeignKey("Id")]
         [InverseProperty("UserInfo")]
         public virtual Account Account { get; set; } = null!;
 

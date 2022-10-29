@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RegistrationSystem.AccessData;
 
@@ -11,9 +12,10 @@ using RegistrationSystem.AccessData;
 namespace RegistrationSystem.AccessData.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221029192426_delete-userinfo-id")]
+    partial class deleteuserinfoid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,7 +89,7 @@ namespace RegistrationSystem.AccessData.Migrations
 
             modelBuilder.Entity("RegistrationSystem.Entities.Models.UserInfo", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("AccountId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("AddressId")
@@ -122,7 +124,7 @@ namespace RegistrationSystem.AccessData.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("AccountId");
 
                     b.HasIndex("AddressId");
 
@@ -131,16 +133,16 @@ namespace RegistrationSystem.AccessData.Migrations
 
             modelBuilder.Entity("RegistrationSystem.Entities.Models.UserInfo", b =>
                 {
+                    b.HasOne("RegistrationSystem.Entities.Models.Account", "Account")
+                        .WithOne("UserInfo")
+                        .HasForeignKey("RegistrationSystem.Entities.Models.UserInfo", "AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("RegistrationSystem.Entities.Models.Address", "Address")
                         .WithMany("UserInfos")
                         .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("RegistrationSystem.Entities.Models.Account", "Account")
-                        .WithOne("UserInfo")
-                        .HasForeignKey("RegistrationSystem.Entities.Models.UserInfo", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Account");
