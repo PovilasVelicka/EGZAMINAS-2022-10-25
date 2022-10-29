@@ -1,6 +1,6 @@
 Klasës (visi laukai privalomi):
 	Account, (laukas su nuotrauka privalomas 200x200)
-	UserInfo, (iraðomas po Account sukûrimo)
+	UserInfo, (iraðomas kartu su  Account sukûrimo)
 	Address
 
 Enum UserRole
