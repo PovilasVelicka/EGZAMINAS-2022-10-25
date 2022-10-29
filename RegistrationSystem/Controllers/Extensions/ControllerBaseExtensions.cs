@@ -22,19 +22,19 @@ namespace RegistrationSystem.Controllers.Extensions
             }
         }
 
-        public static ObjectResult MapServiceDto<K, T> (this ControllerBase controller, IServiceResponseDto<K> responseDto, T? responseObj)
+        public static ObjectResult MapServiceDto<K, T> (this ControllerBase controller, IServiceResponseDto<K> serviceResponseDto, T? controllerResponseData)
         {
             ObjectResult objectResult;
 
-            if (responseDto.IsSuccess)
+            if (serviceResponseDto.IsSuccess)
             {
                 objectResult = new(
                     new SuccessResponse<T>
                     {
-                        IsSuccess = responseDto.IsSuccess,
-                        StatusCode = responseDto.StatuCode,
-                        Message = responseDto.Message,
-                        Payload = responseObj
+                        IsSuccess = serviceResponseDto.IsSuccess,
+                        StatusCode = serviceResponseDto.StatuCode,
+                        Message = serviceResponseDto.Message,
+                        Payload = controllerResponseData
                     });
             }
             else
@@ -42,13 +42,13 @@ namespace RegistrationSystem.Controllers.Extensions
                 objectResult = new(
                   new ErrorResponse
                   {
-                      IsSuccess = responseDto.IsSuccess,
-                      StatusCode = responseDto.StatuCode,
-                      Message = responseDto.Message,
+                      IsSuccess = serviceResponseDto.IsSuccess,
+                      StatusCode = serviceResponseDto.StatuCode,
+                      Message = serviceResponseDto.Message,
                   });
             }
            
-            objectResult.StatusCode = responseDto.StatuCode;
+            objectResult.StatusCode = serviceResponseDto.StatuCode;
             return objectResult;
         }
     }

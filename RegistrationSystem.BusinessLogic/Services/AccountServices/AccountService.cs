@@ -102,7 +102,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
             await _accountsRepository.DeleteAsync(userGuid);
 
-            return new ServiceResponseDto<string>(true, "Account deleted successfuly");
+            return new ServiceResponseDto<string>("Account deleted successfuly", true);
         }
 
         public async Task<IServiceResponseDto<Account>> UpdateUserInfoAsync (Guid userGuid, IUserInfoDto userInfo)

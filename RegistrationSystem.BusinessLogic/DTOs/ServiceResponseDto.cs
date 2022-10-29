@@ -15,7 +15,7 @@
             StatuCode = 400;
         }
 
-        public ServiceResponseDto (bool isSuccess, string message)
+        public ServiceResponseDto (string message, bool isSuccess)
         {
             IsSuccess = isSuccess;
             Message = message;
