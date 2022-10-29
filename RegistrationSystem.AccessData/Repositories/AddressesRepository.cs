@@ -13,13 +13,16 @@ namespace RegistrationSystem.AccessData.Repositories
             _context = context;
         }
 
-        public async Task<Address?> FindAddressAsync (string city, string street, string houseNumber, string appartmentNumber)
+        public async Task<Address?> FindAddressAsync (
+            string city, string street, 
+            string houseNumber, string appartmentNumber)
         {
-            var address = await _context.Addresses.FirstOrDefaultAsync(a =>
-                a.City == city
-                && a.Street == street
-                && a.HouseNumber == houseNumber
-                && a.AppartmentNumber == appartmentNumber);
+            var address = await _context.Addresses
+                .FirstOrDefaultAsync(a =>
+                    a.City == city
+                    && a.Street == street
+                    && a.HouseNumber == houseNumber
+                    && a.AppartmentNumber == appartmentNumber);
             return address;
         }
     }

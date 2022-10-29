@@ -3,11 +3,11 @@ using System.Text.Json.Serialization;
 
 namespace RegistrationSystem.Controllers.DTOs
 {
-    public class ErrorDto
+    public class ErrorResponse
     {
-        [JsonPropertyName("StatusCode")]
-        public int StatusCode { get; set; } 
-        [JsonPropertyName("Error")]
+        [JsonPropertyName("status")]
+        public int StatusCode { get; set; }
+        [JsonPropertyName("error")]
         public string Message { get; set; } = null!;
         public override string ToString ( )
         {

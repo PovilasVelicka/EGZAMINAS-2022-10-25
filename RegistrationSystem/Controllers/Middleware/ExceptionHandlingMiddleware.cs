@@ -51,7 +51,7 @@ namespace RegistrationSystem.Controllers.Middleware
             var response = context.Response;
             response.StatusCode = (int)statusCode;
 
-            var errorDto = new ErrorDto
+            var errorDto = new ErrorResponse
             {
                 StatusCode = (int)statusCode,
                 Message = message,

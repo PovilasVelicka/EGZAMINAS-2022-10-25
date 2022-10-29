@@ -22,8 +22,8 @@ namespace RegistrationSystem.Entities.Models
         [ForeignKey("AccountId")]
         [InverseProperty("UserInfo")]
         public virtual Account Account { get; set; } = null!;
-        
-        public int AddressId { get; set; }
+
+        public virtual int AddressId { get; set; }
         public virtual Address Address { get; set; } = null!;
     }
 }

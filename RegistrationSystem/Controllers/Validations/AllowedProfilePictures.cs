@@ -14,12 +14,15 @@ namespace RegistrationSystem.Controllers.Validations
                 var extention = Path.GetExtension(file.FileName);
                 if (!_allowedExtensions.Contains(extention.ToLower( )))
                 {
-                    return new ValidationResult($"Image type not supported, supported types: {string.Join(", ", _allowedExtensions)}");
+                    return new ValidationResult(
+                        $"Image type not supported, " +
+                        $"supported types: {string.Join(", ", _allowedExtensions)}");
                 }
 
                 if (file.Length > _maxFileSize)
                 {
-                    return new ValidationResult($"The maximum allowed size of the uploaded image is 1Mb");
+                    return new ValidationResult(
+                        $"The maximum allowed size of the uploaded image is 1Mb");
                 }
             }
 

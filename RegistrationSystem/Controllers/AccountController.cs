@@ -8,8 +8,6 @@ using RegistrationSystem.Entities.Enums;
 
 namespace RegistrationSystem.Controllers
 {
-
-
     [Route("api/registration-system/user")]
     [ApiController]
     [DenyRoles( )]
@@ -37,7 +35,7 @@ namespace RegistrationSystem.Controllers
         [AuthorizeRoles(UserRole.Admin)]
         public async Task<IActionResult> DeleteUser ([FromForm] Guid userGuid)
         {
-            
+
             var response = await _accountService.DeleteAccountAsync(this.GetUserGuid( ), userGuid);
             return StatusCode(response.StatuCode, response.Message);
         }
