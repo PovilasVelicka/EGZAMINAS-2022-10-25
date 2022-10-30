@@ -6,6 +6,11 @@ namespace RegistrationSystem.Entities.Models
     [Table("Addresses", Schema = "RegistrationSystem")]
     public class Address
     {
+        public Address ( )
+        {
+            UserInfos = new HashSet<UserInfo>( );
+        }
+
         public int Id { get; set; }
         [StringLength(150)]
         public string City { get; set; } = null!;
@@ -17,10 +22,5 @@ namespace RegistrationSystem.Entities.Models
         public string AppartmentNumber { get; set; } = null!;
 
         public virtual ICollection<UserInfo> UserInfos { get; set; }
-
-        public Address ( )
-        {
-            UserInfos = new HashSet<UserInfo>( );
-        }
     }
 }
