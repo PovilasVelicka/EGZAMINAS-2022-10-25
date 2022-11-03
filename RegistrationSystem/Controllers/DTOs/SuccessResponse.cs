@@ -15,7 +15,7 @@ namespace RegistrationSystem.Controllers.DTOs
         {
             IsSuccess = responseDto.IsSuccess;
             Message = responseDto.Message;
-            StatusCode = responseDto.StatuCode;
+            StatusCode = responseDto.StatusCode;
             Payload = responseDto.Object;
         }
 

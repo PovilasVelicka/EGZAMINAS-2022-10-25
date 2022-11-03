@@ -18,17 +18,16 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
         private readonly IAccountsRepository _accountsRepository;
         private readonly IAddressesRepository _addressesRepository;
         private readonly IJwtService _jwtService;
-        private readonly ILogger<AccountService> _logger;
+      
         public AccountService (
             IAccountsRepository accountRepository,
             IAddressesRepository addressesRepository,
-            IJwtService jwtService,
-            ILogger<AccountService> logger)
+            IJwtService jwtService)
         {
             _accountsRepository = accountRepository;
             _addressesRepository = addressesRepository;
             _jwtService = jwtService;
-            _logger = logger;
+     
         }
 
         public async Task<IServiceResponseDto<string>> LoginAsync (string loginName, string password)

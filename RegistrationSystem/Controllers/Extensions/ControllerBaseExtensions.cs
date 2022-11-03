@@ -32,7 +32,7 @@ namespace RegistrationSystem.Controllers.Extensions
                     new SuccessResponse<T>
                     {
                         IsSuccess = serviceResponseDto.IsSuccess,
-                        StatusCode = serviceResponseDto.StatuCode,
+                        StatusCode = serviceResponseDto.StatusCode,
                         Message = serviceResponseDto.Message,
                         Payload = controllerResponseData
                     });
@@ -43,12 +43,12 @@ namespace RegistrationSystem.Controllers.Extensions
                   new ErrorResponse
                   {
                       IsSuccess = serviceResponseDto.IsSuccess,
-                      StatusCode = serviceResponseDto.StatuCode,
+                      StatusCode = serviceResponseDto.StatusCode,
                       Message = serviceResponseDto.Message,
                   });
             }
            
-            objectResult.StatusCode = serviceResponseDto.StatuCode;
+            objectResult.StatusCode = serviceResponseDto.StatusCode;
             return objectResult;
         }
     }

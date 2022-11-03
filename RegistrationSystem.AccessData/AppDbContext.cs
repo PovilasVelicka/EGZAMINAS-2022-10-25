@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RegistrationSystem.Entities.Enums;
 using RegistrationSystem.Entities.Models;
+using System.Runtime.CompilerServices;
+
+[assembly:InternalsVisibleTo("Common")]
 
 namespace RegistrationSystem.AccessData
 {
