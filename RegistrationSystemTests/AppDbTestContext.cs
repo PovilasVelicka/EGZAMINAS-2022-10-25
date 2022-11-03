@@ -1,7 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RegistrationSystem.AccessData;
+using RegistrationSystem.Entities.Enums;
+using RegistrationSystem.Entities.Models;
+using System.Reflection.Emit;
 
-namespace Common
+namespace RegistrationSystemTests
 {
     internal class AppDbTestContext : DbContext
     {
@@ -17,6 +20,7 @@ namespace Common
             // Delete existing db before creating a new one
             _appDbContext.Database.EnsureDeleted( );
             _appDbContext.Database.EnsureCreated( );
-        }
+          
+        }      
     }
 }

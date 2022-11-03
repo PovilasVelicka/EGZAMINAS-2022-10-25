@@ -2,11 +2,11 @@
 using RegistrationSystem.Entities.Enums;
 using RegistrationSystem.Entities.Models;
 using System.Runtime.CompilerServices;
-
-[assembly:InternalsVisibleTo("Common")]
-
+using System.Runtime.Versioning;
+[assembly: InternalsVisibleTo("RegistrationSystemTests")]
 namespace RegistrationSystem.AccessData
 {
+
     internal class AppDbContext : DbContext
     {
         public DbSet<Account> Accounts { get; set; } = null!;

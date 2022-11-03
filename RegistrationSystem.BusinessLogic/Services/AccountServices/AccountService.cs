@@ -155,8 +155,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             var (passwordHash, passwordSalt) = password.CreatePasswordHash( );
 
             return new Account
-            {
-                Id = Guid.NewGuid( ),
+            {         
                 LoginName = loginName,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,

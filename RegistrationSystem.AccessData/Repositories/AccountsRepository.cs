@@ -2,6 +2,9 @@
 using RegistrationSystem.Common.Interfaces.AccessData;
 using RegistrationSystem.Entities.Enums;
 using RegistrationSystem.Entities.Models;
+using System.Runtime;
+using System.Runtime.CompilerServices;
+[assembly:InternalsVisibleTo("RegistrationSystemTests")]
 
 namespace RegistrationSystem.AccessData.Repositories
 {
@@ -16,6 +19,8 @@ namespace RegistrationSystem.AccessData.Repositories
 
         public async Task<Guid> AddAsync (Account account)
         {
+            if (account.Id != Guid.Empty) throw new KeyNotFoundException("To add account id must by Guid.Empty");
+            account.Id = Guid.NewGuid();
             await _context.Accounts.AddAsync(account);
             await _context.SaveChangesAsync( );
             return account.Id;

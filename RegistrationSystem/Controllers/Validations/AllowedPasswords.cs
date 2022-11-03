@@ -15,12 +15,18 @@ namespace RegistrationSystem.Controllers.Validations
                  || !lowerExists
                  || !digitsExists
                  || password.ToCharArray( ).Length < 6)
+                {
                     return new ValidationResult(
-                        "Invalid password structure. " +
-                        "Password must contain uppercase, " +
-                        "lowercase and numeric characters");
+                                           "Invalid password structure. " +
+                                           "Password must contain uppercase, " +
+                                           "lowercase and numeric characters");
+                }
+                else
+                {
+                    return ValidationResult.Success;
+                }
             }
-            return ValidationResult.Success;
+            return new ValidationResult("Invalid password");
         }
     }
 }

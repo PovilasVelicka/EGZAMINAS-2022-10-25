@@ -1,6 +1,6 @@
-﻿using System.Drawing.Imaging;
+﻿using Microsoft.AspNetCore.Http;
 using System.Drawing;
-using Microsoft.AspNetCore.Http;
+using System.Drawing.Imaging;
 using System.Runtime.Versioning;
 
 namespace RegistrationSystem.Controllers.DTOs
@@ -14,14 +14,17 @@ namespace RegistrationSystem.Controllers.DTOs
 
         public IHeaderDictionary Headers => throw new NotImplementedException( );
 
-        public long Length => 100;
+        private long _maxFileSize = 1024 * 1024;
+        public long Length { get => _maxFileSize; set => _maxFileSize = value; }
 
-        public string Name => "test.jpg";
+        private string _name = "test.jpg";
+        public string Name { get => _name; set => _name = value; }
 
-        public string FileName => "test.jpg";
+        private string _fileName = "test.jpg";
+        public string FileName { get => _fileName; set => _fileName = value; }
 
         public void CopyTo (Stream target)
-        {         
+        {
             var image = new Bitmap(300, 300);
             image.Save(target, ImageFormat.Png);
         }

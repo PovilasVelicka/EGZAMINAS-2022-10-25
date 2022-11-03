@@ -13,13 +13,13 @@ namespace Common.DTOs
     {
         private readonly IFixture _fixture;
   
-        public TestAccount (UserRole usreRole):base()
+        public TestAccount (UserRole usreRole, bool generateGuid = false):base()
         {
             _fixture = new Fixture( );
             var password = _fixture.Create<string>();
 
             var (hash, salt) = password.CreatePasswordHash( );
-            var accountId = Guid.NewGuid( );
+            var accountId = generateGuid? Guid.NewGuid( ):Guid.Empty;
             using var ms = new MemoryStream( );
             var image = new Bitmap(300, 300);
             image.Save(ms, ImageFormat.Png);

@@ -251,9 +251,34 @@ namespace RegistrationSystemTests
             _accountsRepositoryMock.Verify(v => v.DeleteAsync(userAccount.Id), Times.Never);
         }
         [Theory, AutoData]
-        public async Task UpdateUserInfoAsync_WhenUserInfoUpdated ( UserInfoDto userInfo)
+        public async Task UpdateUserInfoAsync_WhenUserInfoUpdated_AllUserPropertiesChanged ( UserInfoDto userInfo)
         {
             var account = new TestAccount(UserRole.User);      
+
+            _accountsRepositoryMock
+                .Setup(r => r.GetAsync(account.Id))
+                .ReturnsAsync(account);
+
+            var response = await _sut.UpdateUserInfoAsync(account.Id, userInfo);
+            var changedUserInfo = response.Object!.UserInfo;
+
+            Assert.Equal(userInfo.FirstName, changedUserInfo.FirstName);
+            Assert.Equal(userInfo.LastName, changedUserInfo.LastName);
+            Assert.Equal(userInfo.Phone, changedUserInfo.Phone);
+            Assert.Equal(userInfo.PersonalCode, changedUserInfo.PersonalCode);
+            Assert.Equal(userInfo.Email, changedUserInfo.Email);
+            Assert.Equal(userInfo.City, changedUserInfo.Address.City);
+            Assert.Equal(userInfo.Street, changedUserInfo.Address.Street);
+            Assert.Equal(userInfo.HouseNumber, changedUserInfo.Address.HouseNumber);
+            Assert.Equal(userInfo.AppartmentNumber, changedUserInfo.Address.AppartmentNumber);         
+        }
+
+        [Fact]
+        public async Task UpdateUserInfoAsync_WhenReceiveNulableProperties_AllUserPropertiesNotChanged ()
+        {
+            var account = new TestAccount(UserRole.User);
+            var userInfo = new UserInfoDto( );
+       
 
             _accountsRepositoryMock
                 .Setup(r => r.GetAsync(account.Id))
@@ -271,11 +296,6 @@ namespace RegistrationSystemTests
             Assert.Equal(account.UserInfo.Address.Street, changedUserInfo.Address.Street);
             Assert.Equal(account.UserInfo.Address.HouseNumber, changedUserInfo.Address.HouseNumber);
             Assert.Equal(account.UserInfo.Address.AppartmentNumber, changedUserInfo.Address.AppartmentNumber);
-
-
-
         }
-
-
     }
 }

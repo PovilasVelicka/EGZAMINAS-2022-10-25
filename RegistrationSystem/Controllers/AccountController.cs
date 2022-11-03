@@ -20,27 +20,6 @@ namespace RegistrationSystem.Controllers
             _accountService = accountService;
         }
 
-        #region Admin end-points
-
-        [HttpGet("admin/users/{searchText}")]
-        [AuthorizeRoles(UserRole.Admin)]
-        public async Task<IActionResult> GetUsers (string searchText)
-        {
-            var response = await _accountService.GetUsersAsync(this.GetUserGuid( ), searchText);
-            var users = response.Object?.Select(u => new AdminUserInfoResponse(u)).ToList( );
-            return this.MapServiceDto(response, users);
-        }
-
-        [HttpDelete("admin/delete-user")]
-        [AuthorizeRoles(UserRole.Admin)]
-        public async Task<IActionResult> DeleteUser ([FromForm] Guid userGuid)
-        {
-            var response = await _accountService.DeleteAccountAsync(this.GetUserGuid( ), userGuid);
-            return this.MapServiceDto(response, response.Object);
-        }
-
-        #endregion
-
         #region User end-points
 
         [HttpGet("user/details")]
