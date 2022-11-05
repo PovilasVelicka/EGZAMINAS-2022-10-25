@@ -3,6 +3,8 @@
     public enum UserRole
     {
         User,
-        Admin
+        Admin,
+        Moderator,
+        Guest
     }
 }

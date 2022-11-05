@@ -12,8 +12,9 @@ namespace RegistrationSystem.Controllers.Attributes
 
             var allowedRolesAsStrings =
                 existsRoles
-            .Where(r => !roles.Any(d => d != r))
-                .Select(x => Enum.GetName(typeof(UserRole), x));
+                    .Where(r => roles.All(rr => rr != r))
+                    .Select(x => Enum.GetName(typeof(UserRole), x))
+                    .ToArray();
 
             Roles = string.Join(",", allowedRolesAsStrings);
         }

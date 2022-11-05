@@ -190,7 +190,7 @@ namespace RegistrationSystemTests
         {
             _accountsRepositoryMock
                 .Setup(u => u.GetAsync(account.Id))
-                .ReturnsAsync(( ) => null);
+                .ReturnsAsync(()=>null!);
 
             var response = await _sut.GetUserInfoAsync(account.Id);
             Assert.Null(response.Object);
