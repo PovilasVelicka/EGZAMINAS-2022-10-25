@@ -6,6 +6,6 @@ namespace RegistrationSystem.Controllers.DTOs.UserInfoRequestDto
     {
         [AllowedInputString]
         public string LastName { get; set; } = null!;
-        public LastNameRequest ( ) { }   
+        public LastNameRequest ( ) { }
     }
 }

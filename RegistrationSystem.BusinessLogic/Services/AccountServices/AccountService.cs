@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using RegistrationSystem.BusinessLogic.DTOs;
+﻿using RegistrationSystem.BusinessLogic.DTOs;
 using RegistrationSystem.BusinessLogic.Services.AuthServices;
 using RegistrationSystem.Common.Interfaces.AccessData;
 using RegistrationSystem.Entities.Enums;
@@ -18,7 +17,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
         private readonly IAccountsRepository _accountsRepository;
         private readonly IAddressesRepository _addressesRepository;
         private readonly IJwtService _jwtService;
-      
+
         public AccountService (
             IAccountsRepository accountRepository,
             IAddressesRepository addressesRepository,
@@ -27,7 +26,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             _accountsRepository = accountRepository;
             _addressesRepository = addressesRepository;
             _jwtService = jwtService;
-     
+
         }
 
         public async Task<IServiceResponseDto<string>> LoginAsync (string loginName, string password)
@@ -53,7 +52,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             {
                 return new ServiceResponseDto<string>(
                     null,
-                    "User name already exists",
+                    "Username already exists",
                     (int)HttpStatusCode.Conflict);
             }
 
@@ -61,7 +60,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             {
                 return new ServiceResponseDto<string>(
                     null,
-                    "All fields are required to create user",
+                    "All fields are required to create a user",
                     (int)HttpStatusCode.BadRequest);
             }
 
@@ -75,7 +74,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
             return new ServiceResponseDto<string>(
                 _jwtService.GetJwtToken(account),
-                "Account created successfuly",
+                "Account created successfully",
                 (int)HttpStatusCode.Created);
         }
 
@@ -88,7 +87,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
         public async Task<IServiceResponseDto<List<Account>>> GetUsersAsync (Guid adminGuid, string searchSubstring)
         {
-            if (!await IsUserAdmin(adminGuid)) return new ServiceResponseDto<List<Account>>("You do not have permissions to view users");
+            if (!await IsUserAdmin(adminGuid)) return new ServiceResponseDto<List<Account>>("You do not have permission to view users");
 
             var accounts = await _accountsRepository.GetAllAsync(searchSubstring);
 
@@ -97,18 +96,20 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
         public async Task<IServiceResponseDto<string>> DeleteAccountAsync (Guid adminGuid, Guid userGuid)
         {
-            if (!await IsUserAdmin(adminGuid)) return new ServiceResponseDto<string>("You do not have permissions to delete user");
+            if (!await IsUserAdmin(adminGuid)) return new ServiceResponseDto<string>("You do not have permission to delete a user");
+
+            if (adminGuid == userGuid) return new ServiceResponseDto<string>("You do not have rights to delete your own account");
 
             await _accountsRepository.DeleteAsync(userGuid);
 
-            return new ServiceResponseDto<string>("Account deleted successfuly", true);
+            return new ServiceResponseDto<string>("Account successfully deleted", true);
         }
 
         public async Task<IServiceResponseDto<Account>> UpdateUserInfoAsync (Guid userGuid, IUserInfoDto userInfo)
         {
             var account = await _accountsRepository.GetAsync(userGuid);
 
-            if (account == null) return new ServiceResponseDto<Account>("User not found");
+            if (account == null) return new ServiceResponseDto<Account>("User is not found");
 
             await MapUserInfo(account, userInfo);
 
@@ -155,7 +156,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             var (passwordHash, passwordSalt) = password.CreatePasswordHash( );
 
             return new Account
-            {         
+            {
                 LoginName = loginName,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
@@ -187,9 +188,9 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
         {
             return contentType switch
             {
-                "image/JPEG" => ImageFormat.Jpeg,
-                "image/PNG" => ImageFormat.Png,
-                "image/GIF" => ImageFormat.Gif,
+                "image/jpeg" => ImageFormat.Jpeg,
+                "image/png" => ImageFormat.Png,
+                "image/gif" => ImageFormat.Gif,
                 _ => ImageFormat.Jpeg,
             };
         }

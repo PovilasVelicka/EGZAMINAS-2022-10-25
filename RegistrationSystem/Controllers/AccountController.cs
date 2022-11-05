@@ -4,7 +4,6 @@ using RegistrationSystem.Controllers.Attributes;
 using RegistrationSystem.Controllers.DTOs;
 using RegistrationSystem.Controllers.DTOs.UserInfoRequestDto;
 using RegistrationSystem.Controllers.Extensions;
-using RegistrationSystem.Entities.Enums;
 
 namespace RegistrationSystem.Controllers
 {

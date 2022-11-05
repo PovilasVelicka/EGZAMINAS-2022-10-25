@@ -20,8 +20,8 @@ namespace RegistrationSystem.Controllers.DTOs
         public byte[ ] ProfilePicture { get; } = null!;
 
         public UserInfoResponse ( ) { }
-        public UserInfoResponse ( IServiceResponseDto<Account> responseDto)
-        {            
+        public UserInfoResponse (IServiceResponseDto<Account> responseDto)
+        {
             var obj = responseDto.Object;
             if (obj == null) return;
 

@@ -6,7 +6,7 @@ namespace RegistrationSystem.Controllers.DTOs.UserInfoRequestDto
     {
         [AllowedInputString]
         public string AppartmentNumber { get; set; } = null!;
-        public AppartmentNumberRequest()
+        public AppartmentNumberRequest ( )
         {
 
         }

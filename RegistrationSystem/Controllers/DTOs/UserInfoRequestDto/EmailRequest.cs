@@ -6,6 +6,6 @@ namespace RegistrationSystem.Controllers.DTOs.UserInfoRequestDto
     {
         [AllowedEmails]
         public string Email { get; set; } = null!;
-        public EmailRequest() { }
+        public EmailRequest ( ) { }
     }
 }

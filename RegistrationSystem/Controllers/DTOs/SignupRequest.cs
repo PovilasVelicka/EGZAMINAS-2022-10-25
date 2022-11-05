@@ -1,5 +1,4 @@
-﻿using RegistrationSystem.Controllers.DTOs.UserInfoRequestDto;
-using RegistrationSystem.Controllers.Validations;
+﻿using RegistrationSystem.Controllers.Validations;
 
 namespace RegistrationSystem.Controllers.DTOs
 {

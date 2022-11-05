@@ -22,13 +22,13 @@ namespace RegistrationSystem.Controllers
         {
             var response = await _accountService.LoginAsync(loginRequest.LoginName, loginRequest.Password);
 
-            return this.MapServiceDto(response,response.Object);           
+            return this.MapServiceDto(response, response.Object);
         }
 
         [HttpPost("signup")]
         public async Task<IActionResult> SignUpAsync ([FromForm] SignupRequest signupRequest)
         {
-            var userDto = new UserInfoDto(signupRequest);         
+            var userDto = new UserInfoDto(signupRequest);
 
             var response = await _accountService.SignupAccountAsync(signupRequest.LoginName, signupRequest.Password, userDto);
 

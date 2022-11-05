@@ -6,6 +6,6 @@ namespace RegistrationSystem.Controllers.DTOs.UserInfoRequestDto
     {
         [AllowedProfilePictures]
         public IFormFile FormFile { get; set; } = null!;
-        public ProfilePictureRequest() { }
+        public ProfilePictureRequest ( ) { }
     }
 }

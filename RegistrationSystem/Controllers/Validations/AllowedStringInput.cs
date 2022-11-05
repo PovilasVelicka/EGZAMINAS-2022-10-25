@@ -10,7 +10,7 @@ namespace RegistrationSystem.Controllers.Validations
             if (value == null) return new ValidationResult("Text cannot be empty");
             if (value is string val)
             {
-                if (string.IsNullOrEmpty(val.Trim())) 
+                if (string.IsNullOrEmpty(val.Trim( )))
                     return new ValidationResult("Text cannot be empty");
             }
             return ValidationResult.Success;

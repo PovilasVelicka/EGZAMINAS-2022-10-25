@@ -11,5 +11,5 @@ namespace RegistrationSystem.Controllers.Attributes
             var allowedRolesAsStrings = roles.Select(x => Enum.GetName(typeof(UserRole), x));
             Roles = string.Join(",", allowedRolesAsStrings);
         }
-    }   
+    }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.TagHelpers;
-using RegistrationSystem.Controllers.DTOs;
+﻿using RegistrationSystem.Controllers.DTOs;
 using System.Net;
 
 namespace RegistrationSystem.Controllers.Middleware
@@ -10,7 +9,7 @@ namespace RegistrationSystem.Controllers.Middleware
         private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
         public ExceptionHandlingMiddleware (
-            RequestDelegate requestDelegate, 
+            RequestDelegate requestDelegate,
             ILogger<ExceptionHandlingMiddleware> logger)
         {
             _requestDelegate = requestDelegate;
@@ -32,7 +31,7 @@ namespace RegistrationSystem.Controllers.Middleware
                     HttpStatusCode.NotFound,
                     "Not found");
             }
-            catch(InvalidOperationException ex)
+            catch (InvalidOperationException ex)
             {
                 await HandleExceptionAsync(
                     context,

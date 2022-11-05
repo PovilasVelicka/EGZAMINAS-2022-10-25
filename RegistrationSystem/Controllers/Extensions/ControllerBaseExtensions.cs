@@ -47,7 +47,7 @@ namespace RegistrationSystem.Controllers.Extensions
                       Message = serviceResponseDto.Message,
                   });
             }
-           
+
             objectResult.StatusCode = serviceResponseDto.StatusCode;
             return objectResult;
         }
