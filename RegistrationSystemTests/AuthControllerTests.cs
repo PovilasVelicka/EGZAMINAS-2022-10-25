@@ -91,5 +91,7 @@ namespace RegistrationSystemTests
                 It.IsAny<UserInfoDto>( )
                 ), Times.Once);
         }
+
+
     }
 }

@@ -20,8 +20,6 @@ namespace RegistrationSystem.Controllers
             _accountService = accountService;
         }
 
-        #region User end-points
-
         [HttpGet("user/details")]
         public async Task<IActionResult> GetUserInfo ( )
         {
@@ -101,7 +99,5 @@ namespace RegistrationSystem.Controllers
             var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { AppartmentNumber = appartmentNumberRequest.AppartmentNumber });
             return this.MapServiceDto(response, response.Object?.UserInfo.Address.AppartmentNumber);
         }
-
-        #endregion
     }
 }

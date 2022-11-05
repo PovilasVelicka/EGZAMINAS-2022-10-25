@@ -19,7 +19,7 @@ namespace RegistrationSystemTests
     public class AccountServiceTests
     {
         private readonly Mock<IAccountsRepository> _accountsRepositoryMock;
-        private readonly Mock<IJwtService> _jwtServicdeMock;
+        private readonly Mock<IJwtService> _jwtServiceMock;
 
         private readonly Mock<IAddressesRepository> _addressesRepositoryMock;
         private readonly IAccountService _sut;
@@ -28,12 +28,12 @@ namespace RegistrationSystemTests
         public AccountServiceTests ( )
         {
             _accountsRepositoryMock = new Mock<IAccountsRepository>( );
-            _jwtServicdeMock = new Mock<IJwtService>( );
+            _jwtServiceMock = new Mock<IJwtService>( );
             _addressesRepositoryMock = new Mock<IAddressesRepository>( );
             _sut = new AccountService(
                 _accountsRepositoryMock.Object,
                 _addressesRepositoryMock.Object,
-                _jwtServicdeMock.Object);
+                _jwtServiceMock.Object);
             _fixture = new Fixture( );
             _formFileMock = new Mock<IFormFile>( );
         }
@@ -141,6 +141,36 @@ namespace RegistrationSystemTests
             Assert.Equal(201, response.StatusCode);
         }
 
+        [Theory, AutoData]
+        public async Task SignUpAndLogin_WhenNewUserCreatedAndLoggedIn_ResponseOk (string loginName, string password, UserInfoDto userInfoDto)
+        {
+            var account = default(Account);
+
+            userInfoDto.SetProfilePicture(new FormFileTest( ));
+            _accountsRepositoryMock
+                .Setup(r => r.AddAsync(It.IsAny<Account>( )))
+                .Callback<Account>(u => account = u);
+
+            _accountsRepositoryMock
+                .Setup(a => a.GetByLoginAsync(loginName))
+                .ReturnsAsync(( ) => null);
+
+            _jwtServiceMock
+                .Setup(j => j.GetJwtToken(It.IsAny<Account>( )))
+                .Returns("token");
+
+            var response = await _sut.SignupAccountAsync(loginName, password, userInfoDto);
+
+            Assert.True(response.IsSuccess);
+
+            _accountsRepositoryMock
+                .Setup(r => r.GetByLoginAsync(loginName))
+                .ReturnsAsync(account);
+
+            var loginResponse = await _sut.LoginAsync(loginName, password);
+            Assert.True(loginResponse.IsSuccess);
+        }
+
         [Theory, TestUserAccount]
         public async Task GetUserInfoAsync_WhenFindUser_ReturnOk (Account account)
         {
@@ -228,11 +258,11 @@ namespace RegistrationSystemTests
             _accountsRepositoryMock
                 .Setup(u => u.GetAsync(adminAccount.Id))
                 .ReturnsAsync(adminAccount);
-           
+
             var response = await _sut.DeleteAccountAsync(adminAccount.Id, userAccount.Id);
             Assert.True(response.IsSuccess);
             Assert.Equal(200, response.StatusCode);
-            _accountsRepositoryMock.Verify(v=>v.DeleteAsync(userAccount.Id),Times.Once);
+            _accountsRepositoryMock.Verify(v => v.DeleteAsync(userAccount.Id), Times.Once);
         }
 
         [Fact]
@@ -251,9 +281,9 @@ namespace RegistrationSystemTests
             _accountsRepositoryMock.Verify(v => v.DeleteAsync(userAccount.Id), Times.Never);
         }
         [Theory, AutoData]
-        public async Task UpdateUserInfoAsync_WhenUserInfoUpdated_AllUserPropertiesChanged ( UserInfoDto userInfo)
+        public async Task UpdateUserInfoAsync_WhenUserInfoUpdated_AllUserPropertiesChanged (UserInfoDto userInfo)
         {
-            var account = new TestAccount(UserRole.User);      
+            var account = new TestAccount(UserRole.User);
 
             _accountsRepositoryMock
                 .Setup(r => r.GetAsync(account.Id))
@@ -270,15 +300,15 @@ namespace RegistrationSystemTests
             Assert.Equal(userInfo.City, changedUserInfo.Address.City);
             Assert.Equal(userInfo.Street, changedUserInfo.Address.Street);
             Assert.Equal(userInfo.HouseNumber, changedUserInfo.Address.HouseNumber);
-            Assert.Equal(userInfo.AppartmentNumber, changedUserInfo.Address.AppartmentNumber);         
+            Assert.Equal(userInfo.AppartmentNumber, changedUserInfo.Address.AppartmentNumber);
         }
 
         [Fact]
-        public async Task UpdateUserInfoAsync_WhenReceiveNulableProperties_AllUserPropertiesNotChanged ()
+        public async Task UpdateUserInfoAsync_WhenReceiveNulableProperties_AllUserPropertiesNotChanged ( )
         {
             var account = new TestAccount(UserRole.User);
             var userInfo = new UserInfoDto( );
-       
+
 
             _accountsRepositoryMock
                 .Setup(r => r.GetAsync(account.Id))
