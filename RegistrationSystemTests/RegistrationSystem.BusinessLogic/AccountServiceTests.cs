@@ -25,25 +25,25 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
         private readonly IAccountService _sut;
         private readonly IFixture _fixture;
         private readonly Mock<IFormFile> _formFileMock;
-        public AccountServiceTests()
+        public AccountServiceTests ( )
         {
-            _accountsRepositoryMock = new Mock<IAccountsRepository>();
-            _jwtServiceMock = new Mock<IJwtService>();
-            _addressesRepositoryMock = new Mock<IAddressesRepository>();
+            _accountsRepositoryMock = new Mock<IAccountsRepository>( );
+            _jwtServiceMock = new Mock<IJwtService>( );
+            _addressesRepositoryMock = new Mock<IAddressesRepository>( );
             _sut = new AccountService(
                 _accountsRepositoryMock.Object,
                 _addressesRepositoryMock.Object,
                 _jwtServiceMock.Object);
-            _fixture = new Fixture();
-            _formFileMock = new Mock<IFormFile>();
+            _fixture = new Fixture( );
+            _formFileMock = new Mock<IFormFile>( );
         }
 
         [Theory, AutoData]
-        public async Task LoginAsync_WhenUserNameNotExists_ReturnNotFound(string loginName, string password)
+        public async Task LoginAsync_WhenUserNameNotExists_ReturnNotFound (string loginName, string password)
         {
             _accountsRepositoryMock
                 .Setup(a => a.GetByLoginAsync(loginName))
-                .ReturnsAsync(() => null);
+                .ReturnsAsync(( ) => null);
 
             var result = await _sut.LoginAsync(loginName, password);
 
@@ -51,7 +51,7 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
         }
 
         [Theory, AutoData]
-        public async Task LoginAsync_WhenUserNametExistsPassowrIsIncorrect_ReturnUnauthorized(string loginName, string password)
+        public async Task LoginAsync_WhenUserNametExistsPassowrIsIncorrect_ReturnUnauthorized (string loginName, string password)
         {
 
             _accountsRepositoryMock
@@ -60,8 +60,8 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
                 new Account
                 {
                     LoginName = loginName,
-                    PasswordHash = _fixture.Create<byte[]>(),
-                    PasswordSalt = _fixture.Create<byte[]>()
+                    PasswordHash = _fixture.Create<byte[ ]>( ),
+                    PasswordSalt = _fixture.Create<byte[ ]>( )
                 });
 
             var result = await _sut.LoginAsync(loginName, password);
@@ -70,9 +70,9 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
         }
 
         [Theory, AutoData]
-        public async Task LoginAsync_WhenUserNametExistsPassowrCorrect_ReturnOk(string loginName, string password)
+        public async Task LoginAsync_WhenUserNametExistsPassowrCorrect_ReturnOk (string loginName, string password)
         {
-            var passwordSicret = password.CreatePasswordHash();
+            var passwordSicret = password.CreatePasswordHash( );
 
             _accountsRepositoryMock
                 .Setup(a => a.GetByLoginAsync(loginName))
@@ -90,15 +90,15 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
         }
 
         [Theory, AutoData]
-        public async Task SignupAccountAsync_WhenLoginNameAlreadyExists_ReturnConflict(string loginName, string password, UserInfoDto userInfoDto)
+        public async Task SignupAccountAsync_WhenLoginNameAlreadyExists_ReturnConflict (string loginName, string password, UserInfoDto userInfoDto)
         {
             _accountsRepositoryMock
                 .Setup(a => a.GetByLoginAsync(loginName))
                 .ReturnsAsync(new Account
                 {
                     LoginName = loginName,
-                    PasswordHash = _fixture.Create<byte[]>(),
-                    PasswordSalt = _fixture.Create<byte[]>()
+                    PasswordHash = _fixture.Create<byte[ ]>( ),
+                    PasswordSalt = _fixture.Create<byte[ ]>( )
                 });
 
             var response = await _sut.SignupAccountAsync(loginName, password, userInfoDto);
@@ -107,11 +107,11 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
         }
 
         [Theory, AutoData]
-        public async Task SignupAccountAsync_WhenNotAllPropertiesSet_ReturnBadRequest(string loginName, string password, UserInfoDto userInfoDto)
+        public async Task SignupAccountAsync_WhenNotAllPropertiesSet_ReturnBadRequest (string loginName, string password, UserInfoDto userInfoDto)
         {
             _accountsRepositoryMock
                 .Setup(a => a.GetByLoginAsync(loginName))
-                .ReturnsAsync(() => null);
+                .ReturnsAsync(( ) => null);
 
             userInfoDto.Email = null;
 
@@ -121,20 +121,20 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
         }
 
         [Theory, AutoData]
-        public async Task SignupAccountAsync_WhenUserCreated_ReturnCreated(string loginName, string password, UserInfoDto userInfoDto)
+        public async Task SignupAccountAsync_WhenUserCreated_ReturnCreated (string loginName, string password, UserInfoDto userInfoDto)
         {
             _accountsRepositoryMock
                 .Setup(a => a.GetByLoginAsync(loginName))
-                .ReturnsAsync(() => null);
+                .ReturnsAsync(( ) => null);
 
             _accountsRepositoryMock
                 .Setup(a => a.CountRoleAsync(UserRole.Admin))
                 .ReturnsAsync(0);
 
             _formFileMock
-                .Setup(i => i.CopyTo(It.IsAny<Stream>()));
+                .Setup(i => i.CopyTo(It.IsAny<Stream>( )));
 
-            userInfoDto.SetProfilePicture(new FormFileTest());
+            userInfoDto.SetProfilePicture(new FormFileTest( ));
 
             var response = await _sut.SignupAccountAsync(loginName, password, userInfoDto);
 
@@ -142,21 +142,21 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
         }
 
         [Theory, AutoData]
-        public async Task SignUpAndLogin_WhenNewUserCreatedAndLoggedIn_ResponseOk(string loginName, string password, UserInfoDto userInfoDto)
+        public async Task SignUpAndLogin_WhenNewUserCreatedAndLoggedIn_ResponseOk (string loginName, string password, UserInfoDto userInfoDto)
         {
             var account = default(Account);
 
-            userInfoDto.SetProfilePicture(new FormFileTest());
+            userInfoDto.SetProfilePicture(new FormFileTest( ));
             _accountsRepositoryMock
-                .Setup(r => r.AddAsync(It.IsAny<Account>()))
+                .Setup(r => r.AddAsync(It.IsAny<Account>( )))
                 .Callback<Account>(u => account = u);
 
             _accountsRepositoryMock
                 .Setup(a => a.GetByLoginAsync(loginName))
-                .ReturnsAsync(() => null);
+                .ReturnsAsync(( ) => null);
 
             _jwtServiceMock
-                .Setup(j => j.GetJwtToken(It.IsAny<Account>()))
+                .Setup(j => j.GetJwtToken(It.IsAny<Account>( )))
                 .Returns("token");
 
             var response = await _sut.SignupAccountAsync(loginName, password, userInfoDto);
@@ -172,7 +172,7 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
         }
 
         [Theory, TestUserAccount]
-        public async Task GetUserInfoAsync_WhenFindUser_ReturnOk(Account account)
+        public async Task GetUserInfoAsync_WhenFindUser_ReturnOk (Account account)
         {
             _accountsRepositoryMock
                 .Setup(u => u.GetAsync(account.Id))
@@ -186,11 +186,11 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
         }
 
         [Theory, TestUserAccount]
-        public async Task GetUserInfoAsync_WhenNotFindUser_ReturnNotFind(Account account)
+        public async Task GetUserInfoAsync_WhenNotFindUser_ReturnNotFind (Account account)
         {
             _accountsRepositoryMock
                 .Setup(u => u.GetAsync(account.Id))
-                .ReturnsAsync(() => null!);
+                .ReturnsAsync(( ) => null!);
 
             var response = await _sut.GetUserInfoAsync(account.Id);
             Assert.Null(response.Object);
@@ -199,7 +199,7 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
         }
 
         [Fact]
-        public async Task GetUsersAsync_WhenUserRoleAdministrator_ReturnOk()
+        public async Task GetUsersAsync_WhenUserRoleAdministrator_ReturnOk ( )
         {
             var account = new TestAccount(UserRole.Admin);
 
@@ -208,7 +208,7 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
                 .ReturnsAsync(account);
 
             _accountsRepositoryMock
-                .Setup(u => u.GetAllAsync(It.IsAny<string>()))
+                .Setup(u => u.GetAllAsync(It.IsAny<string>( )))
                 .ReturnsAsync(new List<Account>
                 {
                     new TestAccount(UserRole.User),
@@ -216,7 +216,7 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
                     new TestAccount(UserRole.User)
                 });
 
-            var response = await _sut.GetUsersAsync(account.Id, It.IsAny<string>());
+            var response = await _sut.GetUsersAsync(account.Id, It.IsAny<string>( ));
 
             Assert.True(response.IsSuccess);
             Assert.Equal(200, response.StatusCode);
@@ -225,7 +225,7 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
         }
 
         [Fact]
-        public async Task GetUsersAsync_WhenUserRoleNotAdministrator_ReturnNotAuthorized()
+        public async Task GetUsersAsync_WhenUserRoleNotAdministrator_ReturnNotAuthorized ( )
         {
             var account = new TestAccount(UserRole.User);
 
@@ -234,7 +234,7 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
                 .ReturnsAsync(account);
 
             _accountsRepositoryMock
-                .Setup(u => u.GetAllAsync(It.IsAny<string>()))
+                .Setup(u => u.GetAllAsync(It.IsAny<string>( )))
                 .ReturnsAsync(new List<Account>
                 {
                     new TestAccount(UserRole.User),
@@ -242,7 +242,7 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
                     new TestAccount(UserRole.User)
                 });
 
-            var response = await _sut.GetUsersAsync(account.Id, It.IsAny<string>());
+            var response = await _sut.GetUsersAsync(account.Id, It.IsAny<string>( ));
 
             Assert.False(response.IsSuccess);
             Assert.Equal(400, response.StatusCode);
@@ -250,10 +250,10 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
         }
 
         [Fact]
-        public async Task DeleteAccountAsync_WhenUserRoleAdmin_ReturnOk()
+        public async Task DeleteAccountAsync_WhenUserRoleAdmin_ReturnOk ( )
         {
-            var adminAccount = new TestAccount(UserRole.Admin);
-            var userAccount = new TestAccount(UserRole.User);
+            var adminAccount = new TestAccount(UserRole.Admin, generateGuid: true);
+            var userAccount = new TestAccount(UserRole.User, generateGuid: true);
 
             _accountsRepositoryMock
                 .Setup(u => u.GetAsync(adminAccount.Id))
@@ -266,7 +266,23 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
         }
 
         [Fact]
-        public async Task DeleteAccountAsync_WhenUserRoleNotAdmin_ReturnNotAuthorized()
+        public async Task DeleteAccountAsync_WhenUserTheSameUser_ReturnCannotDelete ( )
+        {
+            var adminAccount = new TestAccount(UserRole.Admin, generateGuid: true);
+            var userAccount = new TestAccount(UserRole.User, generateGuid: true);
+
+            _accountsRepositoryMock
+                .Setup(u => u.GetAsync(adminAccount.Id))
+                .ReturnsAsync(adminAccount);
+
+            var response = await _sut.DeleteAccountAsync(adminAccount.Id, adminAccount.Id);
+            Assert.False(response.IsSuccess);
+            Assert.Equal(400, response.StatusCode);
+            _accountsRepositoryMock.Verify(v => v.DeleteAsync(userAccount.Id), Times.Never);
+        }
+
+        [Fact]
+        public async Task DeleteAccountAsync_WhenUserRoleNotAdmin_ReturnNotAuthorized ( )
         {
             var adminAccount = new TestAccount(UserRole.User);
             var userAccount = new TestAccount(UserRole.User);
@@ -281,7 +297,7 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
             _accountsRepositoryMock.Verify(v => v.DeleteAsync(userAccount.Id), Times.Never);
         }
         [Theory, AutoData]
-        public async Task UpdateUserInfoAsync_WhenUserInfoUpdated_AllUserPropertiesChanged(UserInfoDto userInfo)
+        public async Task UpdateUserInfoAsync_WhenUserInfoUpdated_AllUserPropertiesChanged (UserInfoDto userInfo)
         {
             var account = new TestAccount(UserRole.User);
 
@@ -304,10 +320,10 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
         }
 
         [Fact]
-        public async Task UpdateUserInfoAsync_WhenReceiveNulableProperties_AllUserPropertiesNotChanged()
+        public async Task UpdateUserInfoAsync_WhenReceiveNulableProperties_AllUserPropertiesNotChanged ( )
         {
             var account = new TestAccount(UserRole.User);
-            var userInfo = new UserInfoDto();
+            var userInfo = new UserInfoDto( );
 
 
             _accountsRepositoryMock
