@@ -8,7 +8,7 @@ namespace Utilites.Exstensions
     public static class StringExtensions
     {
         public static bool IsValidEmail (
-            this string email, 
+            this string email,
             out string localPart, out string domain)
         {
             if (email.IsValidEmail( ))

@@ -2,7 +2,6 @@
 using RegistrationSystem.Entities.Enums;
 using RegistrationSystem.Entities.Models;
 using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
 [assembly: InternalsVisibleTo("RegistrationSystemTests")]
 namespace RegistrationSystem.AccessData
 {

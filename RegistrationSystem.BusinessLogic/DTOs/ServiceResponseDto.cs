@@ -1,5 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
-[assembly:InternalsVisibleTo("RegistrationSystemTests")]
+[assembly: InternalsVisibleTo("RegistrationSystemTests")]
 
 namespace RegistrationSystem.BusinessLogic.DTOs
 {

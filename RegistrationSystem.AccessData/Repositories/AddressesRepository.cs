@@ -14,7 +14,7 @@ namespace RegistrationSystem.AccessData.Repositories
         }
 
         public async Task<Address?> FindAddressAsync (
-            string city, string street, 
+            string city, string street,
             string houseNumber, string appartmentNumber)
         {
             var address = await _context.Addresses
