@@ -129,23 +129,22 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
                 account.UserInfo.ProfilePicture =
                     ResizeImage(userInfo.ProfilePicture, userInfo.ContentType!, 200, 200);
 
-            var city = userInfo.City ?? account.UserInfo.Address.City;
-            var street = userInfo.Street ?? account.UserInfo.Address.Street;
+            var cityStr = userInfo.City ?? account.UserInfo.Address.City.Name;
+            var streetStr = userInfo.Street ?? account.UserInfo.Address.Street.Name;
             var houseNumber = userInfo.HouseNumber ?? account.UserInfo.Address.HouseNumber;
             var appartmentNumber = userInfo.AppartmentNumber ?? account.UserInfo.Address.AppartmentNumber;
 
-
             var existsAddres = await _addressesRepository.FindAddressAsync(
-                city,
-                street,
+                cityStr,
+                streetStr,
                 houseNumber,
                 appartmentNumber);
 
             account.UserInfo
                 .Address = existsAddres ?? new( )
                 {
-                    City = city,
-                    Street = street,
+                    City = (await _addressesRepository.GetCityAsync(cityStr)) ?? new City( ) { Name = cityStr },
+                    Street = (await _addressesRepository.GetStreetAsync(streetStr)) ?? new Street( ) { Name = streetStr },
                     HouseNumber = houseNumber,
                     AppartmentNumber = appartmentNumber
                 };

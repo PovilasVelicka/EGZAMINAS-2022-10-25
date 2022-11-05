@@ -40,11 +40,12 @@ namespace Common.DTOs
                 Address = new Address
                 {
                     Id = ++_addressId,
-                    AppartmentNumber = _fixture.Create<int>( ).ToString( ),
-                    City = _fixture.Create<string>( ),
+                    AppartmentNumber = _fixture.Create<int>( ).ToString( ),                    
+                    City = new City {Name = _fixture.Create<string>( ) },                    
                     HouseNumber = _fixture.Create<int>( ).ToString( ),
-                    Street = _fixture.Create<string>( )
+                    Street = new Street { Name = _fixture.Create<string>( ) },
                 },
+                
                 ProfilePicture = ms.ToArray( )
             };
         }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RegistrationSystem.AccessData;
 
@@ -11,9 +12,10 @@ using RegistrationSystem.AccessData;
 namespace RegistrationSystem.AccessData.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221105182017_update-street-in-address-class")]
+    partial class updatestreetinaddressclass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,14 +97,11 @@ namespace RegistrationSystem.AccessData.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "Name" }, "UI_CityName")
-                        .IsUnique();
-
-                    b.ToTable("Cities", "RegistrationSystem");
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("RegistrationSystem.Entities.Models.Street", b =>
@@ -115,14 +114,11 @@ namespace RegistrationSystem.AccessData.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "Name" }, "UI_StreetName")
-                        .IsUnique();
-
-                    b.ToTable("Streets", "RegistrationSystem");
+                    b.ToTable("Streets");
                 });
 
             modelBuilder.Entity("RegistrationSystem.Entities.Models.UserInfo", b =>

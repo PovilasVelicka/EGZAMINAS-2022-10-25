@@ -73,7 +73,13 @@ namespace RegistrationSystem.AccessData.Repositories
 
         private IQueryable<Account> AccountsQuery ( )
         {
-            return _context.Accounts.Include(u => u.UserInfo).ThenInclude(a => a.Address);
+            return _context.Accounts
+                .Include(u => u.UserInfo)
+                .ThenInclude(a => a.Address).ThenInclude(a => a.City)
+                .Include(u => u.UserInfo)
+                .ThenInclude(a => a.Address).ThenInclude(a => a.Street);
+               
+                
         }
     }
 }

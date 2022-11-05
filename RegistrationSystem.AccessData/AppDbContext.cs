@@ -10,6 +10,8 @@ namespace RegistrationSystem.AccessData
     {
         public DbSet<Account> Accounts { get; set; } = null!;
         public DbSet<Address> Addresses { get; set; } = null!;
+        public DbSet<City> Cities { get; set; } = null!;
+        public DbSet<Street> Streets { get; set; } = null!;
 
         public AppDbContext ( ) { }
         public AppDbContext (DbContextOptions<AppDbContext> options) : base(options) { }

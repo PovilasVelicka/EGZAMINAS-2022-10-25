@@ -12,10 +12,10 @@ namespace RegistrationSystem.Entities.Models
         }
 
         public int Id { get; set; }
-        [StringLength(150)]
-        public string City { get; set; } = null!;
-        [StringLength(150)]
-        public string Street { get; set; } = null!;
+     
+        public City City { get; set; } = null!;
+    
+        public Street Street { get; set; } = null!;
         [StringLength(10)]
         public string HouseNumber { get; set; } = null!;
         [StringLength(10)]

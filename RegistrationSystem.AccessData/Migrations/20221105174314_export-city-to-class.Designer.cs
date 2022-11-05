@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RegistrationSystem.AccessData;
 
@@ -11,9 +12,10 @@ using RegistrationSystem.AccessData;
 namespace RegistrationSystem.AccessData.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221105174314_export-city-to-class")]
+    partial class exportcitytoclass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,14 +75,14 @@ namespace RegistrationSystem.AccessData.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<int>("StreetId")
-                        .HasColumnType("int");
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CityId");
-
-                    b.HasIndex("StreetId");
 
                     b.ToTable("Addresses", "RegistrationSystem");
                 });
@@ -93,36 +95,13 @@ namespace RegistrationSystem.AccessData.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Name")
+                    b.Property<string>("CityName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "Name" }, "UI_CityName")
-                        .IsUnique();
-
-                    b.ToTable("Cities", "RegistrationSystem");
-                });
-
-            modelBuilder.Entity("RegistrationSystem.Entities.Models.Street", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex(new[] { "Name" }, "UI_StreetName")
-                        .IsUnique();
-
-                    b.ToTable("Streets", "RegistrationSystem");
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("RegistrationSystem.Entities.Models.UserInfo", b =>
@@ -177,15 +156,7 @@ namespace RegistrationSystem.AccessData.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RegistrationSystem.Entities.Models.Street", "Street")
-                        .WithMany("Addresses")
-                        .HasForeignKey("StreetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("City");
-
-                    b.Navigation("Street");
                 });
 
             modelBuilder.Entity("RegistrationSystem.Entities.Models.UserInfo", b =>
@@ -219,11 +190,6 @@ namespace RegistrationSystem.AccessData.Migrations
                 });
 
             modelBuilder.Entity("RegistrationSystem.Entities.Models.City", b =>
-                {
-                    b.Navigation("Addresses");
-                });
-
-            modelBuilder.Entity("RegistrationSystem.Entities.Models.Street", b =>
                 {
                     b.Navigation("Addresses");
                 });

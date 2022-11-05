@@ -300,10 +300,12 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
         public async Task UpdateUserInfoAsync_WhenUserInfoUpdated_AllUserPropertiesChanged (UserInfoDto userInfo)
         {
             var account = new TestAccount(UserRole.User);
+        
 
             _accountsRepositoryMock
                 .Setup(r => r.GetAsync(account.Id))
                 .ReturnsAsync(account);
+
 
             var response = await _sut.UpdateUserInfoAsync(account.Id, userInfo);
             var changedUserInfo = response.Object!.UserInfo;
@@ -313,8 +315,8 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
             Assert.Equal(userInfo.Phone, changedUserInfo.Phone);
             Assert.Equal(userInfo.PersonalCode, changedUserInfo.PersonalCode);
             Assert.Equal(userInfo.Email, changedUserInfo.Email);
-            Assert.Equal(userInfo.City, changedUserInfo.Address.City);
-            Assert.Equal(userInfo.Street, changedUserInfo.Address.Street);
+            Assert.Equal(userInfo.City, changedUserInfo.Address.City.Name);
+            Assert.Equal(userInfo.Street, changedUserInfo.Address.Street.Name);
             Assert.Equal(userInfo.HouseNumber, changedUserInfo.Address.HouseNumber);
             Assert.Equal(userInfo.AppartmentNumber, changedUserInfo.Address.AppartmentNumber);
         }

@@ -32,8 +32,8 @@ namespace RegistrationSystem.Controllers.DTOs
             PersonalCode = obj.UserInfo.PersonalCode;
             Phone = obj.UserInfo.Phone;
             Email = obj.UserInfo.Email;
-            City = obj.UserInfo.Address.City;
-            Street = obj.UserInfo.Address.Street;
+            City = obj.UserInfo.Address.City.Name;
+            Street = obj.UserInfo.Address.Street.Name;
             HouseNumber = obj.UserInfo.Address.HouseNumber;
             AppartmentNumber = obj.UserInfo.Address.AppartmentNumber;
             ProfilePicture = obj.UserInfo.ProfilePicture;

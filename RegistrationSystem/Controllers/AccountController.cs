@@ -75,14 +75,14 @@ namespace RegistrationSystem.Controllers
         public async Task<IActionResult> UpdateCity ([FromForm] CityRequest cityRequest)
         {
             var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { City = cityRequest.City });
-            return this.MapServiceDto(response, response.Object?.UserInfo.Address.City);
+            return this.MapServiceDto(response, response.Object?.UserInfo.Address.City.Name);
         }
 
         [HttpPatch("user/change/street")]
         public async Task<IActionResult> UpdateStreet ([FromForm] StreetRequest streetRequest)
         {
             var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { Street = streetRequest.Street });
-            return this.MapServiceDto(response, response.Object?.UserInfo.Address.Street);
+            return this.MapServiceDto(response, response.Object?.UserInfo.Address.Street.Name);
         }
 
         [HttpPatch("user/change/house-number")]
