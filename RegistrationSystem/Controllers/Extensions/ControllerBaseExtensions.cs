@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RegistrationSystem.BusinessLogic.DTOs;
 using RegistrationSystem.Controllers.DTOs;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
-
+[assembly:InternalsVisibleTo("RegistrationSystemTests")]
 namespace RegistrationSystem.Controllers.Extensions
 {
     internal static class ControllerBaseExeption
