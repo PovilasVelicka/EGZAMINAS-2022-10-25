@@ -65,7 +65,7 @@ namespace RegistrationSystem.Controllers
         }
 
         [HttpPatch("user/change/profile-picture")]
-        public async Task<IActionResult> UpdateProfilePicture ([FromForm] PersonPictureRequest profilePictureRequest)
+        public async Task<IActionResult> UpdateProfilePicture ([FromForm] ProfilePictureRequest profilePictureRequest)
         {
             var userInfoDto = new UserInfoDto( );
             userInfoDto.SetProfilePicture(profilePictureRequest.FormFile);

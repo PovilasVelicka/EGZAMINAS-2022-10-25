@@ -2,10 +2,10 @@
 
 namespace RegistrationSystem.Controllers.DTOs.UserInfoRequestDto
 {
-    public class PersonPictureRequest
+    public class ProfilePictureRequest
     {
         [AllowedProfilePictures]
         public IFormFile FormFile { get; set; } = null!;
-        public PersonPictureRequest() { }
+        public ProfilePictureRequest() { }
     }
 }
