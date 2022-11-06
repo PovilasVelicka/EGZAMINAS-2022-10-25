@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RegistrationSystem.AccessData;
 
@@ -11,9 +12,10 @@ using RegistrationSystem.AccessData;
 namespace RegistrationSystem.AccessData.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221106094545_change-properties-to-classes")]
+    partial class changepropertiestoclasses
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,48 +54,6 @@ namespace RegistrationSystem.AccessData.Migrations
                     b.ToTable("Accounts", "RegistrationSystem");
                 });
 
-            modelBuilder.Entity("RegistrationSystem.Entities.Models.AccountProperties.AppartmentNumber", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex(new[] { "Value" }, "UI_AddressProperties_AppartmenNumber")
-                        .IsUnique();
-
-                    b.ToTable("AppartmentNumbers", "AddressProperties");
-                });
-
-            modelBuilder.Entity("RegistrationSystem.Entities.Models.AccountProperties.City", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex(new[] { "Value" }, "UI_AddressProperties_City")
-                        .IsUnique();
-
-                    b.ToTable("Cities", "AddressProperties");
-                });
-
             modelBuilder.Entity("RegistrationSystem.Entities.Models.AccountProperties.Email", b =>
                 {
                     b.Property<int>("Id")
@@ -109,10 +69,7 @@ namespace RegistrationSystem.AccessData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "Value" }, "UI_UserInfoProperties_Email")
-                        .IsUnique();
-
-                    b.ToTable("Emails", "UserInfoProperties");
+                    b.ToTable("Emails", "RegistrationSystem");
                 });
 
             modelBuilder.Entity("RegistrationSystem.Entities.Models.AccountProperties.FirstName", b =>
@@ -130,31 +87,7 @@ namespace RegistrationSystem.AccessData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "Value" }, "UI_UserInfoProperties_FirstName")
-                        .IsUnique();
-
-                    b.ToTable("FirstNames", "UserInfoProperties");
-                });
-
-            modelBuilder.Entity("RegistrationSystem.Entities.Models.AccountProperties.HouseNumber", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex(new[] { "Value" }, "UI_AddressProperties_HouseNumber")
-                        .IsUnique();
-
-                    b.ToTable("HouseNumbers", "AddressProperties");
+                    b.ToTable("FirstNames", "RegistrationSystem");
                 });
 
             modelBuilder.Entity("RegistrationSystem.Entities.Models.AccountProperties.LastName", b =>
@@ -172,10 +105,7 @@ namespace RegistrationSystem.AccessData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "Value" }, "UI_UserInfoProperties_LastName")
-                        .IsUnique();
-
-                    b.ToTable("LastNames", "UserInfoProperties");
+                    b.ToTable("LastNames", "RegistrationSystem");
                 });
 
             modelBuilder.Entity("RegistrationSystem.Entities.Models.AccountProperties.PersonalCode", b =>
@@ -193,10 +123,7 @@ namespace RegistrationSystem.AccessData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "Value" }, "UI_UserInfoProperties_PersonalCode")
-                        .IsUnique();
-
-                    b.ToTable("PersonalCodes", "UserInfoProperties");
+                    b.ToTable("PersonalCodes", "RegistrationSystem");
                 });
 
             modelBuilder.Entity("RegistrationSystem.Entities.Models.AccountProperties.Phone", b =>
@@ -214,31 +141,7 @@ namespace RegistrationSystem.AccessData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "Value" }, "UI_UserInfoProperties_Phone")
-                        .IsUnique();
-
-                    b.ToTable("Phones", "UserInfoProperties");
-                });
-
-            modelBuilder.Entity("RegistrationSystem.Entities.Models.AccountProperties.Street", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex(new[] { "Value" }, "UI_AddressProperties_Street")
-                        .IsUnique();
-
-                    b.ToTable("Streets", "AddressProperties");
+                    b.ToTable("Phones", "RegistrationSystem");
                 });
 
             modelBuilder.Entity("RegistrationSystem.Entities.Models.Address", b =>
@@ -249,29 +152,69 @@ namespace RegistrationSystem.AccessData.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("AppartmentNumberId")
-                        .HasColumnType("int");
+                    b.Property<string>("AppartmentNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<int>("CityId")
                         .HasColumnType("int");
 
-                    b.Property<int>("HouseNumberId")
-                        .HasColumnType("int");
+                    b.Property<string>("HouseNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<int>("StreetId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppartmentNumberId");
-
                     b.HasIndex("CityId");
-
-                    b.HasIndex("HouseNumberId");
 
                     b.HasIndex("StreetId");
 
                     b.ToTable("Addresses", "RegistrationSystem");
+                });
+
+            modelBuilder.Entity("RegistrationSystem.Entities.Models.City", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "Name" }, "UI_CityName")
+                        .IsUnique();
+
+                    b.ToTable("Cities", "RegistrationSystem");
+                });
+
+            modelBuilder.Entity("RegistrationSystem.Entities.Models.Street", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "Name" }, "UI_StreetName")
+                        .IsUnique();
+
+                    b.ToTable("Streets", "RegistrationSystem");
                 });
 
             modelBuilder.Entity("RegistrationSystem.Entities.Models.UserInfo", b =>
@@ -320,35 +263,19 @@ namespace RegistrationSystem.AccessData.Migrations
 
             modelBuilder.Entity("RegistrationSystem.Entities.Models.Address", b =>
                 {
-                    b.HasOne("RegistrationSystem.Entities.Models.AccountProperties.AppartmentNumber", "AppartmentNumber")
-                        .WithMany("Addresses")
-                        .HasForeignKey("AppartmentNumberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RegistrationSystem.Entities.Models.AccountProperties.City", "City")
+                    b.HasOne("RegistrationSystem.Entities.Models.City", "City")
                         .WithMany("Addresses")
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RegistrationSystem.Entities.Models.AccountProperties.HouseNumber", "HouseNumber")
-                        .WithMany("Addresses")
-                        .HasForeignKey("HouseNumberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RegistrationSystem.Entities.Models.AccountProperties.Street", "Street")
+                    b.HasOne("RegistrationSystem.Entities.Models.Street", "Street")
                         .WithMany("Addresses")
                         .HasForeignKey("StreetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AppartmentNumber");
-
                     b.Navigation("City");
-
-                    b.Navigation("HouseNumber");
 
                     b.Navigation("Street");
                 });
@@ -418,16 +345,6 @@ namespace RegistrationSystem.AccessData.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RegistrationSystem.Entities.Models.AccountProperties.AppartmentNumber", b =>
-                {
-                    b.Navigation("Addresses");
-                });
-
-            modelBuilder.Entity("RegistrationSystem.Entities.Models.AccountProperties.City", b =>
-                {
-                    b.Navigation("Addresses");
-                });
-
             modelBuilder.Entity("RegistrationSystem.Entities.Models.AccountProperties.Email", b =>
                 {
                     b.Navigation("UserInfos");
@@ -436,11 +353,6 @@ namespace RegistrationSystem.AccessData.Migrations
             modelBuilder.Entity("RegistrationSystem.Entities.Models.AccountProperties.FirstName", b =>
                 {
                     b.Navigation("UserInfos");
-                });
-
-            modelBuilder.Entity("RegistrationSystem.Entities.Models.AccountProperties.HouseNumber", b =>
-                {
-                    b.Navigation("Addresses");
                 });
 
             modelBuilder.Entity("RegistrationSystem.Entities.Models.AccountProperties.LastName", b =>
@@ -458,14 +370,19 @@ namespace RegistrationSystem.AccessData.Migrations
                     b.Navigation("UserInfos");
                 });
 
-            modelBuilder.Entity("RegistrationSystem.Entities.Models.AccountProperties.Street", b =>
+            modelBuilder.Entity("RegistrationSystem.Entities.Models.Address", b =>
+                {
+                    b.Navigation("UserInfos");
+                });
+
+            modelBuilder.Entity("RegistrationSystem.Entities.Models.City", b =>
                 {
                     b.Navigation("Addresses");
                 });
 
-            modelBuilder.Entity("RegistrationSystem.Entities.Models.Address", b =>
+            modelBuilder.Entity("RegistrationSystem.Entities.Models.Street", b =>
                 {
-                    b.Navigation("UserInfos");
+                    b.Navigation("Addresses");
                 });
 #pragma warning restore 612, 618
         }

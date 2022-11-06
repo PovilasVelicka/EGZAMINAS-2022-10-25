@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RegistrationSystem.Common.Interfaces.AccessData;
 using RegistrationSystem.Entities.Models;
+using RegistrationSystem.Entities.Models.AccountProperties;
 
 namespace RegistrationSystem.AccessData.Repositories
 {
@@ -19,21 +20,21 @@ namespace RegistrationSystem.AccessData.Repositories
         {
             var address = await GetAddresses( )
                 .FirstOrDefaultAsync(a =>
-                    a.City.Name == city
-                    && a.Street.Name == street
-                    && a.HouseNumber == houseNumber
-                    && a.AppartmentNumber == appartmentNumber);
+                    a.City.Value == city
+                    && a.Street.Value == street
+                    && a.HouseNumber.Value == houseNumber
+                    && a.AppartmentNumber.Value == appartmentNumber);
             return address;
         }
 
         public async Task<City?> GetCityAsync (string cityName)
         {
-            return await _context.Cities.FirstOrDefaultAsync(c => c.Name == cityName);
+            return (await _context.Addresses.FirstOrDefaultAsync(c => c.City.Value == cityName))?.City;
         }
 
         public async Task<Street?> GetStreetAsync (string streetName)
         {
-            return await _context.Streets.FirstOrDefaultAsync(s => s.Name == streetName);
+            return (await _context.Addresses.FirstOrDefaultAsync(c => c.Street.Value == streetName))?.Street;
         }
 
         private IQueryable<Address> GetAddresses ( )
@@ -41,7 +42,9 @@ namespace RegistrationSystem.AccessData.Repositories
             return _context
                 .Addresses
                 .Include(c => c.City)
-                .Include(s => s.Street);
+                .Include(s => s.Street)
+                .Include(h=> h.HouseNumber)
+                .Include(a=> a.AppartmentNumber);
         }
     }
 }

@@ -18,10 +18,10 @@ namespace RegistrationSystem.Controllers.DTOs
             Id = account.Id;
             LoginName = account.LoginName;
             Role = account.Role;
-            FirstName = account.UserInfo.FirstName;
-            LastName = account.UserInfo.LastName;
-            Phone = account.UserInfo.Phone;
-            Email = account.UserInfo.Email;
+            FirstName = account.UserInfo.FirstName.Value;
+            LastName = account.UserInfo.LastName.Value;
+            Phone = account.UserInfo.Phone.Value;
+            Email = account.UserInfo.Email.Value;
         }
     }
 }

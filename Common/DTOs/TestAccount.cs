@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using RegistrationSystem.Entities.Enums;
 using RegistrationSystem.Entities.Models;
+using RegistrationSystem.Entities.Models.AccountProperties;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.Versioning;
@@ -32,20 +33,20 @@ namespace Common.DTOs
             UserInfo = new UserInfo
             {
                 Id = accountId,
-                FirstName = _fixture.Create<string>( ),
-                LastName = _fixture.Create<string>( ),
-                Email = $"{_fixture.Create<string>( )}@mail.com",
-                PersonalCode = _fixture.Create<string>( ),
-                Phone = _fixture.Create<string>( ),
+                FirstName = new FirstName { Value = _fixture.Create<string>( ) },
+                LastName = new LastName { Value = _fixture.Create<string>( ) },
+                Email = new Email { Value = $"{_fixture.Create<string>( )}@mail.com" },
+                PersonalCode = new PersonalCode { Value = _fixture.Create<string>( ) },
+                Phone = new Phone { Value = _fixture.Create<string>( ) },
                 Address = new Address
                 {
                     Id = ++_addressId,
-                    AppartmentNumber = _fixture.Create<int>( ).ToString( ),                    
-                    City = new City {Name = _fixture.Create<string>( ) },                    
-                    HouseNumber = _fixture.Create<int>( ).ToString( ),
-                    Street = new Street { Name = _fixture.Create<string>( ) },
+                    AppartmentNumber = new AppartmentNumber { Value = _fixture.Create<int>( ).ToString( ) },
+                    City = new City { Value = _fixture.Create<string>( ) },
+                    HouseNumber = new HouseNumber { Value = _fixture.Create<int>( ).ToString( ) },
+                    Street = new Street { Value = _fixture.Create<string>( ) },
                 },
-                
+
                 ProfilePicture = ms.ToArray( )
             };
         }

@@ -43,7 +43,7 @@ namespace RegistrationSystem.Controllers.Middleware
             {
                 await HandleExceptionAsync(
                     context,
-                    ex.Message,
+                    $"{ex.Message}\n{ex.InnerException?.Message}",
                     HttpStatusCode.InternalServerError,
                     "Internal server error");
             }

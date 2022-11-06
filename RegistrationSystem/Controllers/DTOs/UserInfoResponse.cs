@@ -27,15 +27,15 @@ namespace RegistrationSystem.Controllers.DTOs
 
             LoginName = obj.LoginName;
             Role = obj.Role;
-            FirstName = obj.UserInfo.FirstName;
-            LastName = obj.UserInfo.LastName;
-            PersonalCode = obj.UserInfo.PersonalCode;
-            Phone = obj.UserInfo.Phone;
-            Email = obj.UserInfo.Email;
-            City = obj.UserInfo.Address.City.Name;
-            Street = obj.UserInfo.Address.Street.Name;
-            HouseNumber = obj.UserInfo.Address.HouseNumber;
-            AppartmentNumber = obj.UserInfo.Address.AppartmentNumber;
+            FirstName = obj.UserInfo.FirstName.Value;
+            LastName = obj.UserInfo.LastName.Value;
+            PersonalCode = obj.UserInfo.PersonalCode.Value;
+            Phone = obj.UserInfo.Phone.Value;
+            Email = obj.UserInfo.Email.Value;
+            City = obj.UserInfo.Address.City.Value;
+            Street = obj.UserInfo.Address.Street.Value;
+            HouseNumber = obj.UserInfo.Address.HouseNumber.Value;
+            AppartmentNumber = obj.UserInfo.Address.AppartmentNumber.Value;
             ProfilePicture = obj.UserInfo.ProfilePicture;
         }
     }

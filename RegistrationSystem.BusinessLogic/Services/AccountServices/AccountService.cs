@@ -3,6 +3,7 @@ using RegistrationSystem.BusinessLogic.Services.AuthServices;
 using RegistrationSystem.Common.Interfaces.AccessData;
 using RegistrationSystem.Entities.Enums;
 using RegistrationSystem.Entities.Models;
+using RegistrationSystem.Entities.Models.AccountProperties;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Net;
@@ -68,7 +69,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
             var account = CreateAccount(loginName, password, adminCount == 0 ? UserRole.Admin : UserRole.User);
 
-            await MapUserInfo(account, userInfo);
+            MapUserInfo(account, userInfo);
 
             await _accountsRepository.AddAsync(account);
 
@@ -111,43 +112,49 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
             if (account == null) return new ServiceResponseDto<Account>("User is not found");
 
-            await MapUserInfo(account, userInfo);
+            MapUserInfo(account, userInfo);
 
             await _accountsRepository.UpdateAsync(account);
 
             return new ServiceResponseDto<Account>(account);
         }
 
-        private async Task MapUserInfo (Account account, IUserInfoDto userInfo)
+        private void MapUserInfo (Account account, IUserInfoDto userInfo)
         {
-            account.UserInfo.Phone = userInfo.Phone ?? account.UserInfo.Phone;
-            account.UserInfo.Email = userInfo.Email ?? account.UserInfo.Email;
-            account.UserInfo.LastName = userInfo.LastName ?? account.UserInfo.LastName;
-            account.UserInfo.FirstName = userInfo.FirstName ?? account.UserInfo.FirstName;
-            account.UserInfo.PersonalCode = userInfo.PersonalCode ?? account.UserInfo.PersonalCode;
+            if (userInfo.Phone != null) account.UserInfo.Phone = new Phone { Value = userInfo.Phone };
+            if (userInfo.PersonalCode != null) account.UserInfo.PersonalCode = new PersonalCode { Value = userInfo.PersonalCode };
+            if (userInfo.Email != null) account.UserInfo.Email = new Email { Value = userInfo.Email };
+            if (userInfo.LastName != null) account.UserInfo.LastName = new LastName { Value = userInfo.LastName };
+            if (userInfo.FirstName != null) account.UserInfo.FirstName = new FirstName { Value = userInfo.FirstName };
+
+            if (userInfo.City != null) account.UserInfo.Address.City = new City { Value = userInfo.City };
+            if (userInfo.Street != null) account.UserInfo.Address.Street = new Street { Value = userInfo.Street };
+            if (userInfo.HouseNumber != null) account.UserInfo.Address.HouseNumber = new HouseNumber { Value = userInfo.HouseNumber };
+            if (userInfo.AppartmentNumber != null) account.UserInfo.Address.AppartmentNumber = new AppartmentNumber { Value = userInfo.AppartmentNumber };
+
             if (userInfo.ProfilePicture != null)
                 account.UserInfo.ProfilePicture =
                     ResizeImage(userInfo.ProfilePicture, userInfo.ContentType!, 200, 200);
 
-            var cityStr = userInfo.City ?? account.UserInfo.Address.City.Name;
-            var streetStr = userInfo.Street ?? account.UserInfo.Address.Street.Name;
-            var houseNumber = userInfo.HouseNumber ?? account.UserInfo.Address.HouseNumber;
-            var appartmentNumber = userInfo.AppartmentNumber ?? account.UserInfo.Address.AppartmentNumber;
+            //var cityStr = userInfo.City ?? account.UserInfo.Address.City.Value;
+            //var streetStr = userInfo.Street ?? account.UserInfo.Address.Street.Value;
+            //var houseNumber = userInfo.HouseNumber ?? account.UserInfo.Address.HouseNumber;
+            //var appartmentNumber = userInfo.AppartmentNumber ?? account.UserInfo.Address.AppartmentNumber;
 
-            var existsAddres = await _addressesRepository.FindAddressAsync(
-                cityStr,
-                streetStr,
-                houseNumber,
-                appartmentNumber);
+            //var existsAddres = await _addressesRepository.FindAddressAsync(
+            //    userInfo.City,
+            //    streetStr,
+            //    houseNumber,
+            //    appartmentNumber);
 
-            account.UserInfo
-                .Address = existsAddres ?? new( )
-                {
-                    City = (await _addressesRepository.GetCityAsync(cityStr)) ?? new City( ) { Name = cityStr },
-                    Street = (await _addressesRepository.GetStreetAsync(streetStr)) ?? new Street( ) { Name = streetStr },
-                    HouseNumber = houseNumber,
-                    AppartmentNumber = appartmentNumber
-                };
+            //account.UserInfo
+            //    .Address = existsAddres ?? new( )
+            //    {
+            //        City = new City( ) { Value = cityStr },
+            //        Street = new Street( ) { Value = streetStr },
+            //        HouseNumber = houseNumber,
+            //        AppartmentNumber = appartmentNumber
+            //    };
         }
 
         private static Account CreateAccount (string loginName, string password, UserRole role)

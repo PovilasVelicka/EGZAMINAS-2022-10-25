@@ -1,4 +1,5 @@
 ﻿using RegistrationSystem.Entities.Models;
+using RegistrationSystem.Entities.Models.AccountProperties;
 
 namespace RegistrationSystem.Common.Interfaces.AccessData
 {

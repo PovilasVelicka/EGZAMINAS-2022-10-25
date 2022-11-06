@@ -99,9 +99,9 @@ namespace RegistrationSystemTests.RegistrationSystem.AccessData
         public async Task GetAllAsync_WhenSearchStringExists_ReturAccounts()
         {
             var admin = new TestAccount(UserRole.User, generateGuid: false);
-            admin.UserInfo.FirstName = "povilas";
-            admin.UserInfo.LastName = "velicka";
-            admin.UserInfo.Email = "emailas@cramo.com";
+            admin.UserInfo.FirstName.Value = "povilas";
+            admin.UserInfo.LastName.Value = "velicka";
+            admin.UserInfo.Email.Value = "emailas@cramo.com";
 
             _context.Context.Accounts.Add(admin);
             _context.Context.SaveChanges();

@@ -310,15 +310,15 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
             var response = await _sut.UpdateUserInfoAsync(account.Id, userInfo);
             var changedUserInfo = response.Object!.UserInfo;
 
-            Assert.Equal(userInfo.FirstName, changedUserInfo.FirstName);
-            Assert.Equal(userInfo.LastName, changedUserInfo.LastName);
-            Assert.Equal(userInfo.Phone, changedUserInfo.Phone);
-            Assert.Equal(userInfo.PersonalCode, changedUserInfo.PersonalCode);
-            Assert.Equal(userInfo.Email, changedUserInfo.Email);
-            Assert.Equal(userInfo.City, changedUserInfo.Address.City.Name);
-            Assert.Equal(userInfo.Street, changedUserInfo.Address.Street.Name);
-            Assert.Equal(userInfo.HouseNumber, changedUserInfo.Address.HouseNumber);
-            Assert.Equal(userInfo.AppartmentNumber, changedUserInfo.Address.AppartmentNumber);
+            Assert.Equal(userInfo.FirstName, changedUserInfo.FirstName.Value);
+            Assert.Equal(userInfo.LastName, changedUserInfo.LastName.Value);
+            Assert.Equal(userInfo.Phone, changedUserInfo.Phone.Value);
+            Assert.Equal(userInfo.PersonalCode, changedUserInfo.PersonalCode.Value);
+            Assert.Equal(userInfo.Email, changedUserInfo.Email.Value);
+            Assert.Equal(userInfo.City, changedUserInfo.Address.City.Value);
+            Assert.Equal(userInfo.Street, changedUserInfo.Address.Street.Value);
+            Assert.Equal(userInfo.HouseNumber, changedUserInfo.Address.HouseNumber.Value);
+            Assert.Equal(userInfo.AppartmentNumber, changedUserInfo.Address.AppartmentNumber.Value);
         }
 
         [Fact]
