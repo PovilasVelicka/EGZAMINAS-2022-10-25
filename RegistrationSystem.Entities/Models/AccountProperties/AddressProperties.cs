@@ -1,12 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace RegistrationSystem.Entities.Models.AccountProperties
 {
@@ -19,7 +13,7 @@ namespace RegistrationSystem.Entities.Models.AccountProperties
 
         public int Id { get; set; }
 
-        [StringLength(256)]
+        [StringLength(100)]
         public virtual string Value { get; set; } = null!;
 
         public virtual ICollection<Address> Addresses { get; set; }
@@ -35,9 +29,17 @@ namespace RegistrationSystem.Entities.Models.AccountProperties
 
     [Table("HouseNumbers", Schema = "AddressProperties")]
     [Index("Value", Name = "UI_AddressProperties_HouseNumber", IsUnique = true)]
-    public class HouseNumber : AddressProperties { }
+    public class HouseNumber : AddressProperties
+    {
+        [StringLength(10)]
+        public override string Value { get => base.Value; set => base.Value = value; }
+    }
 
     [Table("AppartmentNumbers", Schema = "AddressProperties")]
     [Index("Value", Name = "UI_AddressProperties_AppartmenNumber", IsUnique = true)]
-    public class AppartmentNumber : AddressProperties { }
+    public class AppartmentNumber : AddressProperties
+    {
+        [StringLength(10)]
+        public override string Value { get => base.Value; set => base.Value = value; }
+    }
 }

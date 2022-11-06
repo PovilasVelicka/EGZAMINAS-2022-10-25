@@ -8,13 +8,13 @@ namespace RegistrationSystem.Entities.Models.AccountProperties
     {
         public UserInfoProperties ( )
         {
-            UserInfos=new HashSet<UserInfo>();
-        } 
+            UserInfos = new HashSet<UserInfo>( );
+        }
 
         public int Id { get; set; }
 
-        [StringLength(256)]
-        public virtual string Value { get; set; } = null!;   
+        [StringLength(100)]
+        public virtual string Value { get; set; } = null!;
 
         public virtual ICollection<UserInfo> UserInfos { get; set; }
     }
@@ -37,5 +37,9 @@ namespace RegistrationSystem.Entities.Models.AccountProperties
 
     [Table("Emails", Schema = "UserInfoProperties")]
     [Index("Value", Name = "UI_UserInfoProperties_Email", IsUnique = true)]
-    public class Email : UserInfoProperties { }
+    public class Email : UserInfoProperties
+    {
+        [Unicode(false)]
+        public override string Value { get => base.Value; set => base.Value = value; }
+    }
 }
