@@ -21,7 +21,7 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
         private readonly Mock<IAccountsRepository> _accountsRepositoryMock;
         private readonly Mock<IJwtService> _jwtServiceMock;
 
-      
+        private readonly Mock<IAddressesRepository> _addressesRepositoryMock;
         private readonly IAccountService _sut;
         private readonly IFixture _fixture;
         private readonly Mock<IFormFile> _formFileMock;
@@ -29,9 +29,10 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
         {
             _accountsRepositoryMock = new Mock<IAccountsRepository>( );
             _jwtServiceMock = new Mock<IJwtService>( );
-      
+            _addressesRepositoryMock = new Mock<IAddressesRepository>( );
             _sut = new AccountService(
-                _accountsRepositoryMock.Object,     
+                _accountsRepositoryMock.Object,
+                _addressesRepositoryMock.Object,
                 _jwtServiceMock.Object);
             _fixture = new Fixture( );
             _formFileMock = new Mock<IFormFile>( );

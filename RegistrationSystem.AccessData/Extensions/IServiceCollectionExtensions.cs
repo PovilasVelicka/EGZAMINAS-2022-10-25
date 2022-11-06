@@ -15,7 +15,7 @@ namespace RegistrationSystem.AccessData.Extensions
                 options.UseSqlServer(configuration.GetConnectionString("RegistrationSystemDb")));
 
             services.AddScoped<IAccountsRepository, AccountsRepository>( );
-           
+            services.AddScoped<IAddressesRepository, AddressesRepository>( );
 
             return services;
         }
