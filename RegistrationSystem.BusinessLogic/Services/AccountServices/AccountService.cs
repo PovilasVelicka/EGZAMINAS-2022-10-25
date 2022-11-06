@@ -16,14 +16,14 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
     internal class AccountService : IAccountService
     {
         private readonly IAccountsRepository _accountsRepository;
-
+ 
         private readonly IJwtService _jwtService;
 
         public AccountService (
-            IAccountsRepository accountRepository,
+            IAccountsRepository accountRepository,  
             IJwtService jwtService)
         {
-            _accountsRepository = accountRepository;
+            _accountsRepository = accountRepository;    
             _jwtService = jwtService;
         }
 
