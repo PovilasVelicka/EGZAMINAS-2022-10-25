@@ -1,25 +1,26 @@
-﻿using Common.DTOs;
+﻿using AutoFixture.Xunit2;
+using Common.DTOs;
 using RegistrationSystem.AccessData.Repositories;
 using RegistrationSystem.Common.Interfaces.AccessData;
 using RegistrationSystem.Entities.Enums;
+using RegistrationSystem.Entities.Models;
 using System.Runtime.Versioning;
-
 
 namespace RegistrationSystemTests.RegistrationSystem.AccessData
 {
     [SupportedOSPlatform("windows")]
     public class AccountsRepositoryTests
     {
-        private readonly AppDbTestContext _context;
+        private readonly AppDbTestContext _Db;
         private readonly IAccountsRepository _sut;
-        public AccountsRepositoryTests()
+        public AccountsRepositoryTests ( )
         {
-            _context = new AppDbTestContext();
-            _sut = new AccountsRepository(_context.Context);
+            _Db = new AppDbTestContext( );
+            _sut = new AccountsRepository(_Db.Context);
         }
 
         [Fact]
-        public async Task AddAsync_WhenAddNewAccount_ReturnGuid()
+        public async Task AddAsync_WhenAddNewAccount_ReturnGuid ( )
         {
             var account = new TestAccount(UserRole.User, generateGuid: false);
 
@@ -29,7 +30,7 @@ namespace RegistrationSystemTests.RegistrationSystem.AccessData
         }
 
         [Fact]
-        public async Task AddAsync_WhenAddNewAccountWithGuid_ThrowKeyNotFoundException()
+        public async Task AddAsync_WhenAddNewAccountWithGuid_ThrowKeyNotFoundException ( )
         {
             var account = new TestAccount(UserRole.User, generateGuid: true);
             var errorHandled = false;
@@ -48,14 +49,14 @@ namespace RegistrationSystemTests.RegistrationSystem.AccessData
         }
 
         [Fact]
-        public async Task CountRoleAsync_WhenHasAdminRole_ReturAdminCount()
+        public async Task CountRoleAsync_WhenHasAdminRole_ReturAdminCount ( )
         {
             for (var i = 0; i < 10; i++)
             {
-                _context.Context.Accounts.Add(new TestAccount(UserRole.Admin, generateGuid: true));
+                _Db.Context.Accounts.Add(new TestAccount(UserRole.Admin, generateGuid: true));
 
             }
-            _context.Context.SaveChanges();
+            _Db.Context.SaveChanges( );
 
 
             var actual = await _sut.CountRoleAsync(UserRole.Admin);
@@ -64,14 +65,14 @@ namespace RegistrationSystemTests.RegistrationSystem.AccessData
         }
 
         [Fact]
-        public async Task CountRoleAsync_WhenNoAdminRole_ReturZerro()
+        public async Task CountRoleAsync_WhenNoAdminRole_ReturZerro ( )
         {
             for (var i = 0; i < 10; i++)
             {
-                _context.Context.Accounts.Add(new TestAccount(UserRole.User, generateGuid: true));
+                _Db.Context.Accounts.Add(new TestAccount(UserRole.User, generateGuid: true));
 
             }
-            _context.Context.SaveChanges();
+            _Db.Context.SaveChanges( );
 
             var actual = await _sut.CountRoleAsync(UserRole.Admin);
 
@@ -79,32 +80,32 @@ namespace RegistrationSystemTests.RegistrationSystem.AccessData
         }
 
         [Fact]
-        public async Task DeleteAsync_CreateAndDelete()
+        public async Task DeleteAsync_CreateAndDelete ( )
         {
             var account = new TestAccount(UserRole.User, generateGuid: false);
 
-            _context.Context.Accounts.Add(account);
-            _context.Context.SaveChanges();
+            _Db.Context.Accounts.Add(account);
+            _Db.Context.SaveChanges( );
             var id = account.Id;
 
-            var beforeDelete = _context.Context.Accounts.FirstOrDefault(u => u.Id == id);
+            var beforeDelete = _Db.Context.Accounts.FirstOrDefault(u => u.Id == id);
             Assert.NotNull(beforeDelete);
 
             await _sut.DeleteAsync(id);
-            var afterDelete = _context.Context.Accounts.FirstOrDefault(u => u.Id == id);
+            var afterDelete = _Db.Context.Accounts.FirstOrDefault(u => u.Id == id);
             Assert.Null(afterDelete);
         }
 
         [Fact]
-        public async Task GetAllAsync_WhenSearchStringExists_ReturAccounts()
+        public async Task GetAllAsync_WhenSearchStringExists_ReturAccounts ( )
         {
             var admin = new TestAccount(UserRole.User, generateGuid: false);
             admin.UserInfo.FirstName.Value = "povilas";
             admin.UserInfo.LastName.Value = "velicka";
             admin.UserInfo.Email.Value = "emailas@cramo.com";
 
-            _context.Context.Accounts.Add(admin);
-            _context.Context.SaveChanges();
+            _Db.Context.Accounts.Add(admin);
+            _Db.Context.SaveChanges( );
 
             var accounts = await _sut.GetAllAsync("las vel");
             var accountsCount = accounts.Count;
@@ -121,11 +122,11 @@ namespace RegistrationSystemTests.RegistrationSystem.AccessData
         }
 
         [Fact]
-        public async Task GetAsync_WhenGuidExists_ReturnAccount()
+        public async Task GetAsync_WhenGuidExists_ReturnAccount ( )
         {
             var account = new TestAccount(UserRole.User, generateGuid: true);
-            _context.Context.Accounts.Add(account);
-            _context.Context.SaveChanges();
+            _Db.Context.Accounts.Add(account);
+            _Db.Context.SaveChanges( );
 
             var actual = await _sut.GetAsync(account.Id);
 
@@ -134,11 +135,11 @@ namespace RegistrationSystemTests.RegistrationSystem.AccessData
         }
 
         [Fact]
-        public async Task GetByLoginAsync_WhenLoginExists_ReturnAccount()
+        public async Task GetByLoginAsync_WhenLoginExists_ReturnAccount ( )
         {
             var account = new TestAccount(UserRole.User, generateGuid: true);
-            _context.Context.Accounts.Add(account);
-            _context.Context.SaveChanges();
+            _Db.Context.Accounts.Add(account);
+            _Db.Context.SaveChanges( );
 
             var actual = await _sut.GetByLoginAsync(account.LoginName);
 
@@ -146,18 +147,60 @@ namespace RegistrationSystemTests.RegistrationSystem.AccessData
         }
 
         [Fact]
-        public async Task GetByLoginAsync_WhenLoginNotExists_ReturnNull()
+        public async Task GetByLoginAsync_WhenLoginNotExists_ReturnNull ( )
         {
             var account = new TestAccount(UserRole.User, generateGuid: true);
-            _context.Context.Accounts.Add(account);
-            _context.Context.SaveChanges();
+            _Db.Context.Accounts.Add(account);
+            _Db.Context.SaveChanges( );
 
             var actual = await _sut.GetByLoginAsync(account.LoginName + "not-exists");
 
             Assert.Null(actual);
         }
 
-        [Fact]
-        public async Task UpdateAsync_
+        [Theory, AutoData]
+        public async Task UpdateAsync_WhenUpdateUserInfoFirstName_ValueChanged (string expected)
+        {
+            var account = new TestAccount(UserRole.User, generateGuid: true);
+            _Db.Context.Accounts.Add(account);
+            await _Db.Context.SaveChangesAsync( );
+            account.UserInfo.FirstName.Value = expected;
+            var returned = await GetAfterUpdate(account);
+            var actual = returned.UserInfo.FirstName.Value;
+            Assert.Equal(expected, actual);
+        }
+
+
+        [Theory, AutoData]
+        public async Task UpdateAsync_WhenUpdateAddressCity_ValueChanged (string expected)
+        {
+            var account = new TestAccount(UserRole.User, generateGuid: true);
+            _Db.Context.Accounts.Add(account);
+            await _Db.Context.SaveChangesAsync( );
+            account.UserInfo.Address.City.Value = expected;
+            var returned = await GetAfterUpdate(account);
+            var actual = returned.UserInfo.Address.City.Value;
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory, AutoData]
+        public async Task UpdateAsync_WhenUpdateUserRole_ValueChanged (UserRole expected)
+        {
+            var account = new TestAccount(UserRole.User, generateGuid: true);
+            _Db.Context.Accounts.Add(account);
+            await _Db.Context.SaveChangesAsync( );
+            account.Role = expected;
+            var returned = await GetAfterUpdate(account);
+            var actual = returned.Role;
+            Assert.Equal(expected, actual);
+        }
+
+        private async Task<Account> GetAfterUpdate (Account account)
+        {
+            _Db.Context.Accounts.Update(account);
+            _Db.Context.SaveChanges( );
+            return await _sut.GetAsync(account.Id);
+        }
+
     }
 }
