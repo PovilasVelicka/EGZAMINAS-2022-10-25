@@ -116,6 +116,7 @@ namespace RegistrationSystem.AccessData.Repositories
                 var street = await _context.Streets.FirstOrDefaultAsync(s => s.Value == account.UserInfo.Address.Street.Value);
                 var houseNumber = await _context.HouseNumbers.FirstOrDefaultAsync(h => h.Value == account.UserInfo.Address.HouseNumber.Value);
                 var appartmentNumber = await _context.AppartmentNumbers.FirstOrDefaultAsync(a => a.Value == account.UserInfo.Address.AppartmentNumber.Value);
+                account.UserInfo.AddressId = 0;
                 account.UserInfo.Address = new( )
                 {
                     City = city ?? account.UserInfo.Address.City,

@@ -139,8 +139,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             if (userInfo.Street != null) account.UserInfo.Address.Street =
                     new Street { Value = userInfo.Street };
 
-            if (userInfo.HouseNumber != null) account.UserInfo.Address.HouseNumber =
-                    new HouseNumber { Value = userInfo.HouseNumber };
+            if (userInfo.HouseNumber != null) account.UserInfo.Address.HouseNumber.Value =  userInfo.HouseNumber ;
 
             if (userInfo.AppartmentNumber != null) account.UserInfo.Address.AppartmentNumber =
                     new AppartmentNumber { Value = userInfo.AppartmentNumber };
