@@ -89,14 +89,14 @@ namespace RegistrationSystem.Controllers
         public async Task<IActionResult> UpdateHouseNumber ([FromForm] HouseNumberRequest houseNumberRequest)
         {
             var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { HouseNumber = houseNumberRequest.HouseNumber });
-            return this.MapServiceDto(response, response.Object?.UserInfo.Address.HouseNumber);
+            return this.MapServiceDto(response, response.Object?.UserInfo.Address.HouseNumber.Value);
         }
 
         [HttpPatch("user/change/appartment-number")]
         public async Task<IActionResult> UpdateAppartmentNumber ([FromForm] AppartmentNumberRequest appartmentNumberRequest)
         {
             var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { AppartmentNumber = appartmentNumberRequest.AppartmentNumber });
-            return this.MapServiceDto(response, response.Object?.UserInfo.Address.AppartmentNumber);
+            return this.MapServiceDto(response, response.Object?.UserInfo.Address.AppartmentNumber.Value);
         }
     }
 }

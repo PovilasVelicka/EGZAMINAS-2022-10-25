@@ -1,4 +1,5 @@
-﻿using RegistrationSystem.Controllers.DTOs;
+﻿using Microsoft.EntityFrameworkCore;
+using RegistrationSystem.Controllers.DTOs;
 using System.Net;
 
 namespace RegistrationSystem.Controllers.Middleware
@@ -29,7 +30,7 @@ namespace RegistrationSystem.Controllers.Middleware
                     context,
                     ex.Message,
                     HttpStatusCode.NotFound,
-                    "Not found");
+                    "Key not found");
             }
             catch (InvalidOperationException ex)
             {
@@ -38,6 +39,14 @@ namespace RegistrationSystem.Controllers.Middleware
                     ex.Message,
                     HttpStatusCode.BadRequest,
                     "Invalid Operation Exception");
+            }
+            catch (DbUpdateException ex)
+            {
+                await HandleExceptionAsync(
+                  context,
+                  $"{ex.Message}\n{ex.InnerException?.Message}",
+                  HttpStatusCode.BadRequest,
+                  "An error occurred while saving the changes");
             }
             catch (Exception ex)
             {
