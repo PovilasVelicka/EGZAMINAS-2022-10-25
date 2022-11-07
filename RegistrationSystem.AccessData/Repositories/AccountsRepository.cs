@@ -69,6 +69,7 @@ namespace RegistrationSystem.AccessData.Repositories
         public async Task UpdateAsync (Account account)
         {
             await ChangePropertiesToExistsAsync(account);
+
             _context.Accounts.Update(account);
             await _context.SaveChangesAsync( );
         }

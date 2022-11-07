@@ -16,14 +16,19 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
     internal class AccountService : IAccountService
     {
         private readonly IAccountsRepository _accountsRepository;
- 
+        private readonly IAddressesRepository _addressesRepository;
         private readonly IJwtService _jwtService;
+        private readonly IPropertiesRepository _propertiesRepository;
 
         public AccountService (
-            IAccountsRepository accountRepository,  
+            IAccountsRepository accountRepository,
+            IAddressesRepository addressesRepository,
+            IPropertiesRepository propertiesRepository,
             IJwtService jwtService)
         {
-            _accountsRepository = accountRepository;    
+            _addressesRepository = addressesRepository;
+            _accountsRepository = accountRepository;
+            _propertiesRepository = propertiesRepository;
             _jwtService = jwtService;
         }
 
@@ -66,7 +71,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
             var account = CreateAccount(loginName, password, adminCount == 0 ? UserRole.Admin : UserRole.User);
 
-            MapUserInfo(account, userInfo);
+            await MapAccountFromUserInfoDtoAsync(account, userInfo);
 
             await _accountsRepository.AddAsync(account);
 
@@ -109,43 +114,108 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
             if (account == null) return new ServiceResponseDto<Account>("User is not found");
 
-            MapUserInfo(account, userInfo);
+            await MapAccountFromUserInfoDtoAsync(account, userInfo);
 
             await _accountsRepository.UpdateAsync(account);
 
             return new ServiceResponseDto<Account>(account);
         }
 
-        private void MapUserInfo (Account account, IUserInfoDto userInfo)
+        private async Task MapAccountFromUserInfoDtoAsync (Account account, IUserInfoDto userInfoDto)
         {
-            if (userInfo.Phone != null) account.UserInfo.Phone =
+            await MapAccountUserInfoAsync(account, userInfoDto);
+            await MapAccountAddressAsync(account, userInfoDto);
+        }
+
+        private async Task MapAccountUserInfoAsync (Account account, IUserInfoDto userInfo)
+        {
+            if (userInfo.Phone != null)
+            {
+                account.UserInfo.Phone =
+                    await _propertiesRepository.GetPhoneAsync(userInfo.Phone) ??
                     new Phone { Value = userInfo.Phone };
+            };
 
-            if (userInfo.PersonalCode != null) account.UserInfo.PersonalCode =
+            if (userInfo.PersonalCode != null)
+            {
+                account.UserInfo.PersonalCode =
+                    await _propertiesRepository.GetPersonalCodeAsync(userInfo.PersonalCode) ??
                     new PersonalCode { Value = userInfo.PersonalCode };
+            }
 
-            if (userInfo.Email != null) account.UserInfo.Email =
+            if (userInfo.Email != null)
+            {
+                account.UserInfo.Email =
+                    await _propertiesRepository.GetEmailAsync(userInfo.Email) ??
                     new Email { Value = userInfo.Email };
+            }
 
-            if (userInfo.LastName != null) account.UserInfo.LastName =
+            if (userInfo.LastName != null)
+            {
+                account.UserInfo.LastName =
+                    await _propertiesRepository.GetLastNameAsync(userInfo.LastName) ??
                     new LastName { Value = userInfo.LastName };
+            }
 
-            if (userInfo.FirstName != null) account.UserInfo.FirstName =
+            if (userInfo.FirstName != null)
+            {
+                account.UserInfo.FirstName =
+                    await _propertiesRepository.GetFirstNameAsync(userInfo.FirstName) ??
                     new FirstName { Value = userInfo.FirstName };
+            }
 
-            if (userInfo.City != null) account.UserInfo.Address.City =
-                    new City { Value = userInfo.City };
-
-            if (userInfo.Street != null) account.UserInfo.Address.Street =
-                    new Street { Value = userInfo.Street };
-
-            if (userInfo.HouseNumber != null) account.UserInfo.Address.HouseNumber.Value =  userInfo.HouseNumber ;
-
-            if (userInfo.AppartmentNumber != null) account.UserInfo.Address.AppartmentNumber =
-                    new AppartmentNumber { Value = userInfo.AppartmentNumber };
 
             if (userInfo.ProfilePicture != null) account.UserInfo.ProfilePicture =
                     ResizeImage(userInfo.ProfilePicture, userInfo.ContentType!, 200, 200);
+        }
+
+        private async Task MapAccountAddressAsync (Account account, IUserInfoDto userInfo)
+        {
+            if (userInfo.City != null || userInfo.Street != null || userInfo.HouseNumber != null || userInfo.AppartmentNumber != null)
+            {
+                City city;
+                Street street;
+                HouseNumber houseNumber;
+                AppartmentNumber appartmentNumber;
+
+                if (userInfo.City != null)
+                    city = await _addressesRepository.GetCityAsync(userInfo.City) ?? new City { Value = userInfo.City };
+                else
+                    city = account.UserInfo.Address.City;
+
+
+                if (userInfo.Street != null)
+                    street = await _addressesRepository.GetStreetAsync(userInfo.Street) ?? new Street { Value = userInfo.Street };
+                else
+                    street = account.UserInfo.Address.Street;
+
+
+                if (userInfo.HouseNumber != null)
+                    houseNumber = await _addressesRepository.GetHouseNumberAsync(userInfo.HouseNumber) ?? new HouseNumber { Value = userInfo.HouseNumber };
+                else
+                    houseNumber = account.UserInfo.Address.HouseNumber;
+
+
+                if (userInfo.AppartmentNumber != null)
+                    appartmentNumber = await _addressesRepository.GetAppartmentNumberAsync(userInfo.AppartmentNumber) ?? new AppartmentNumber { Value = userInfo.AppartmentNumber };
+                else
+                    appartmentNumber = account.UserInfo.Address.AppartmentNumber;
+
+
+                account.UserInfo.Address =
+                    await _addressesRepository.GetAddressAsync(
+                        city: city.Value,
+                        street: street.Value,
+                        houseNumber: houseNumber.Value,
+                        appartmentNumber: appartmentNumber.Value)
+                    ?? new Address
+                    {
+                        City = city,
+                        Street = street,
+                        HouseNumber = houseNumber,
+                        AppartmentNumber = appartmentNumber
+                    };
+            }
         }
 
         private static Account CreateAccount (string loginName, string password, UserRole role)
@@ -161,7 +231,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
                 UserInfo = new( )
                 {
                     Address = new( )
-                },
+                }
             };
         }
 

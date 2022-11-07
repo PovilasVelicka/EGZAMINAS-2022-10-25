@@ -30,35 +30,35 @@ namespace RegistrationSystem.Controllers
         public async Task<IActionResult> UpdateFirstName ([FromForm] FirstNameRequest firstNameRequest)
         {
             var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { FirstName = firstNameRequest.FirstName });
-            return this.MapServiceDto(response, response.Object?.UserInfo.FirstName);
+            return this.MapServiceDto(response, response.Object?.UserInfo.FirstName.Value);
         }
 
         [HttpPatch("user/change/last-name")]
         public async Task<IActionResult> UpdateLastName ([FromForm] LastNameRequest lastNameRequest)
         {
             var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { LastName = lastNameRequest.LastName });
-            return this.MapServiceDto(response, response.Object?.UserInfo.LastName);
+            return this.MapServiceDto(response, response.Object?.UserInfo.LastName.Value);
         }
 
         [HttpPatch("user/change/personal-code")]
         public async Task<IActionResult> UpdatePersonalCode ([FromForm] PersonalCodeRequest personalCodeRequest)
         {
             var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { PersonalCode = personalCodeRequest.PersonalCode });
-            return this.MapServiceDto(response, response.Object?.UserInfo.PersonalCode);
+            return this.MapServiceDto(response, response.Object?.UserInfo.PersonalCode.Value);
         }
 
         [HttpPatch("user/change/phone-number")]
         public async Task<IActionResult> UpdatePhoneNumber ([FromQuery] PhoneRequest phoneNumber)
         {
             var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { Phone = phoneNumber.Phone });
-            return this.MapServiceDto(response, response.Object?.UserInfo.Phone);
+            return this.MapServiceDto(response, response.Object?.UserInfo.Phone.Value);
         }
 
         [HttpPatch("user/change/email")]
         public async Task<IActionResult> UpdateEmail ([FromForm] EmailRequest emailRequest)
         {
             var response = await _accountService.UpdateUserInfoAsync(this.GetUserGuid( ), new UserInfoDto { Email = emailRequest.Email });
-            return this.MapServiceDto(response, response.Object?.UserInfo.Email);
+            return this.MapServiceDto(response, response.Object?.UserInfo.Email.Value );
         }
 
         [HttpPatch("user/change/profile-picture")]
