@@ -18,12 +18,12 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
         private readonly IAccountsRepository _accountsRepository;
         private readonly IAddressesRepository _addressesRepository;
         private readonly IJwtService _jwtService;
-        private readonly IPropertiesRepository _propertiesRepository;
+        private readonly IUserInfoRepository _propertiesRepository;
 
         public AccountService (
             IAccountsRepository accountRepository,
             IAddressesRepository addressesRepository,
-            IPropertiesRepository propertiesRepository,
+            IUserInfoRepository propertiesRepository,
             IJwtService jwtService)
         {
             _addressesRepository = addressesRepository;
@@ -163,7 +163,6 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
                     await _propertiesRepository.GetFirstNameAsync(userInfo.FirstName) ??
                     new FirstName { Value = userInfo.FirstName };
             }
-
 
             if (userInfo.ProfilePicture != null) account.UserInfo.ProfilePicture =
                     ResizeImage(userInfo.ProfilePicture, userInfo.ContentType!, 200, 200);

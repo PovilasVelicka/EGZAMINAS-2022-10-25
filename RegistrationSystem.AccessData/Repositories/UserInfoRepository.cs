@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace RegistrationSystem.AccessData.Repositories
 {
-    internal class PropertiesRepository : IPropertiesRepository
+    internal class UserInfoRepository : IUserInfoRepository
     {
         private readonly AppDbContext _context;
-        public PropertiesRepository ( AppDbContext dbContext )
+        public UserInfoRepository ( AppDbContext dbContext )
         {
             _context = dbContext;
         }

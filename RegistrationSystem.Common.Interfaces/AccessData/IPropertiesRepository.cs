@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RegistrationSystem.Common.Interfaces.AccessData
 {
-    public interface IPropertiesRepository
+    public interface IUserInfoRepository
     {
         Task<Phone?> GetPhoneAsync(string phoneNumber);
         Task<PersonalCode?> GetPersonalCodeAsync(string personalCode);

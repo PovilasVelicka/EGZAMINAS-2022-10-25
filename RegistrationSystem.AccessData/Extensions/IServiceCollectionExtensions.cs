@@ -16,7 +16,7 @@ namespace RegistrationSystem.AccessData.Extensions
 
             services.AddScoped<IAccountsRepository, AccountsRepository>( );
             services.AddScoped<IAddressesRepository, AddressesRepository>( );
-            services.AddScoped<IPropertiesRepository, PropertiesRepository>( );
+            services.AddScoped<IUserInfoRepository, UserInfoRepository>( );
 
             return services;
         }
