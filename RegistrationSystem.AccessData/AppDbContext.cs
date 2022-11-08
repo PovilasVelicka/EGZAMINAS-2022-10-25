@@ -9,15 +9,15 @@ namespace RegistrationSystem.AccessData
 
     internal class AppDbContext : DbContext
     {
-        public DbSet<Account> Accounts { get; set; } = null!;    
+        public DbSet<Account> Accounts { get; set; } = null!;
         public DbSet<Phone> Phones { get; set; } = null!;
         public DbSet<PersonalCode> PersonalCodes { get; set; } = null!;
-        public DbSet<Email> Emails { get; set; }=null!;
-        public DbSet<FirstName> FirstNames { get; set; }  =null!;
+        public DbSet<Email> Emails { get; set; } = null!;
+        public DbSet<FirstName> FirstNames { get; set; } = null!;
         public DbSet<LastName> LastNames { get; set; } = null!;
         public DbSet<Address> Addresses { get; set; } = null!;
         public DbSet<City> Cities { get; set; } = null!;
-        public DbSet<Street> Streets { get; set; }=null!;
+        public DbSet<Street> Streets { get; set; } = null!;
         public DbSet<HouseNumber> HouseNumbers { get; set; } = null!;
         public DbSet<AppartmentNumber> AppartmentNumbers { get; set; } = null!;
         public AppDbContext ( ) { }

@@ -61,7 +61,7 @@ namespace RegistrationSystem.AccessData.Repositories
 
         public async Task<Account?> GetByLoginAsync (string userLogin)
         {
-            var account = await AccountsQuery( ).SingleOrDefaultAsync(a => a.LoginName == userLogin);
+            var account = await AccountsQuery( ).FirstOrDefaultAsync(a => a.LoginName == userLogin);
             return account;
         }
 

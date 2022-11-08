@@ -303,7 +303,7 @@ namespace RegistrationSystemTests.RegistrationSystem.BusinessLogic
         public async Task UpdateUserInfoAsync_WhenUserInfoUpdated_AllUserPropertiesChanged (UserInfoDto userInfo)
         {
             var account = new TestAccount(UserRole.User);
-        
+
 
             _accountsRepositoryMock
                 .Setup(r => r.GetAsync(account.Id))

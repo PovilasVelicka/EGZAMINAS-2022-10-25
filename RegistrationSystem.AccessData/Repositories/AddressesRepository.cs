@@ -27,30 +27,22 @@ namespace RegistrationSystem.AccessData.Repositories
 
         public async Task<AppartmentNumber?> GetAppartmentNumberAsync (string appartmentNumber)
         {
-            var number = await _context.AppartmentNumbers.FirstOrDefaultAsync(n => n.Value == appartmentNumber);
-            number ??= new AppartmentNumber { Value = appartmentNumber };
-            return number;
+            return await _context.AppartmentNumbers.FirstOrDefaultAsync(n => n.Value == appartmentNumber);
         }
 
         public async Task<City?> GetCityAsync (string cityName)
         {
-            var name = await _context.Cities.FirstOrDefaultAsync(n => n.Value == cityName);
-            name ??= new City { Value = cityName };
-            return name;
+            return await _context.Cities.FirstOrDefaultAsync(n => n.Value == cityName);
         }
 
         public async Task<HouseNumber?> GetHouseNumberAsync (string houseNumber)
         {
-            var number = await _context.HouseNumbers.FirstOrDefaultAsync(n => n.Value == houseNumber);
-            number ??= new HouseNumber { Value = houseNumber };
-            return number;
+            return await _context.HouseNumbers.FirstOrDefaultAsync(n => n.Value == houseNumber);
         }
 
         public async Task<Street?> GetStreetAsync (string streetName)
         {
-            var name = await _context.Streets.FirstOrDefaultAsync(n => n.Value == streetName);
-            name ??= new Street { Value = streetName };
-            return name;
+            return await _context.Streets.FirstOrDefaultAsync(n => n.Value == streetName);         
         }
 
         private IQueryable<Address> AddressQuery ( )

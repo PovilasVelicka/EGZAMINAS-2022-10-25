@@ -8,14 +8,14 @@ using System.Runtime.Versioning;
 
 namespace RegistrationSystemTests.RegistrationSystem.AccessData
 {
-    [SupportedOSPlatform("windows")]
+    [SupportedOSPlatform("windows")]    
     public class AccountsRepositoryTests
     {
         private readonly AppDbTestContext _Db;
         private readonly IAccountsRepository _sut;
         public AccountsRepositoryTests ( )
         {
-            _Db = new AppDbTestContext( );
+            _Db = new AppDbTestContext("AccountsRepositoryTestsDb");
             _sut = new AccountsRepository(_Db.Context);
         }
 
@@ -82,10 +82,8 @@ namespace RegistrationSystemTests.RegistrationSystem.AccessData
         [Fact]
         public async Task DeleteAsync_CreateAndDelete ( )
         {
-            var account = new TestAccount(UserRole.User, generateGuid: false);
+            var account = CreateDbAccount( );
 
-            _Db.Context.Accounts.Add(account);
-            _Db.Context.SaveChanges( );
             var id = account.Id;
 
             var beforeDelete = _Db.Context.Accounts.FirstOrDefault(u => u.Id == id);
@@ -99,7 +97,7 @@ namespace RegistrationSystemTests.RegistrationSystem.AccessData
         [Fact]
         public async Task GetAllAsync_WhenSearchStringExists_ReturAccounts ( )
         {
-            var admin = new TestAccount(UserRole.User, generateGuid: false);
+            var admin = new TestAccount(UserRole.User, generateGuid: true);
             admin.UserInfo.FirstName.Value = "povilas";
             admin.UserInfo.LastName.Value = "velicka";
             admin.UserInfo.Email.Value = "emailas@cramo.com";
@@ -124,23 +122,18 @@ namespace RegistrationSystemTests.RegistrationSystem.AccessData
         [Fact]
         public async Task GetAsync_WhenGuidExists_ReturnAccount ( )
         {
-            var account = new TestAccount(UserRole.User, generateGuid: true);
-            _Db.Context.Accounts.Add(account);
-            _Db.Context.SaveChanges( );
+            var account = CreateDbAccount( );
 
             var actual = await _sut.GetAsync(account.Id);
 
-            Assert.Equal(account, actual);
-
+            Assert.Equal(account.Id, actual.Id);
         }
 
         [Fact]
         public async Task GetByLoginAsync_WhenLoginExists_ReturnAccount ( )
         {
-            var account = new TestAccount(UserRole.User, generateGuid: true);
-            _Db.Context.Accounts.Add(account);
-            _Db.Context.SaveChanges( );
-
+            var account = CreateDbAccount( );
+       
             var actual = await _sut.GetByLoginAsync(account.LoginName);
 
             Assert.Equal(account.Id, actual!.Id);
@@ -149,9 +142,7 @@ namespace RegistrationSystemTests.RegistrationSystem.AccessData
         [Fact]
         public async Task GetByLoginAsync_WhenLoginNotExists_ReturnNull ( )
         {
-            var account = new TestAccount(UserRole.User, generateGuid: true);
-            _Db.Context.Accounts.Add(account);
-            _Db.Context.SaveChanges( );
+            var account = CreateDbAccount( );
 
             var actual = await _sut.GetByLoginAsync(account.LoginName + "not-exists");
 
@@ -161,9 +152,8 @@ namespace RegistrationSystemTests.RegistrationSystem.AccessData
         [Theory, AutoData]
         public async Task UpdateAsync_WhenUpdateUserInfoFirstName_ValueChanged (string expected)
         {
-            var account = new TestAccount(UserRole.User, generateGuid: true);
-            _Db.Context.Accounts.Add(account);
-            await _Db.Context.SaveChangesAsync( );
+            var account = CreateDbAccount( );
+
             account.UserInfo.FirstName.Value = expected;
             var returned = await GetAfterUpdate(account);
             var actual = returned.UserInfo.FirstName.Value;
@@ -174,9 +164,8 @@ namespace RegistrationSystemTests.RegistrationSystem.AccessData
         [Theory, AutoData]
         public async Task UpdateAsync_WhenUpdateAddressCity_ValueChanged (string expected)
         {
-            var account = new TestAccount(UserRole.User, generateGuid: true);
-            _Db.Context.Accounts.Add(account);
-            await _Db.Context.SaveChangesAsync( );
+            var account = CreateDbAccount( );
+
             account.UserInfo.Address.City.Value = expected;
             var returned = await GetAfterUpdate(account);
             var actual = returned.UserInfo.Address.City.Value;
@@ -186,13 +175,20 @@ namespace RegistrationSystemTests.RegistrationSystem.AccessData
         [Theory, AutoData]
         public async Task UpdateAsync_WhenUpdateUserRole_ValueChanged (UserRole expected)
         {
-            var account = new TestAccount(UserRole.User, generateGuid: true);
-            _Db.Context.Accounts.Add(account);
-            await _Db.Context.SaveChangesAsync( );
+            var account = CreateDbAccount( );
+
             account.Role = expected;
             var returned = await GetAfterUpdate(account);
             var actual = returned.Role;
             Assert.Equal(expected, actual);
+        }
+
+        private Account CreateDbAccount ( )
+        {
+            var account = new TestAccount(UserRole.User, generateGuid: true);
+            _Db.Context.Accounts.Add(account);
+            _Db.Context.SaveChanges( );
+            return account;
         }
 
         private async Task<Account> GetAfterUpdate (Account account)
