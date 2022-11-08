@@ -49,7 +49,7 @@ namespace RegistrationSystem.AccessData.Repositories
         public async Task<Street?> GetStreetAsync (string streetName)
         {
             var name = await _context.Streets.FirstOrDefaultAsync(n => n.Value == streetName);
-            name??= new Street { Value = streetName };
+            name ??= new Street { Value = streetName };
             return name;
         }
 

@@ -7,9 +7,8 @@ namespace RegistrationSystem.Common.Interfaces.AccessData
     {
         Task<Address?> GetAddressAsync (string city, string street, string houseNumber, string appartmentNumber);
         Task<City?> GetCityAsync (string cityName);
-        Task<Street?> GetStreetAsync (string streetName);       
+        Task<Street?> GetStreetAsync (string streetName);
         Task<HouseNumber?> GetHouseNumberAsync (string houseNumber);
-        Task<AppartmentNumber?> GetAppartmentNumberAsync (string appartmentNumber);  
-
+        Task<AppartmentNumber?> GetAppartmentNumberAsync (string appartmentNumber);
     }
 }
