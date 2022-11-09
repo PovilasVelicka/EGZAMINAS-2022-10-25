@@ -9,6 +9,7 @@ using System.Text;
 
 namespace RegistrationSystem.BusinessLogic.Extensions
 {
+    [SupportedOSPlatform("windows")]
     public static class IServiceCollectionExtensions
     {
         public static IServiceCollection AddAuthorization (this IServiceCollection services, IConfiguration configuration)
@@ -32,7 +33,7 @@ namespace RegistrationSystem.BusinessLogic.Extensions
 
             return services;
         }
-        [SupportedOSPlatform("windows")]
+       
         public static IServiceCollection AddServices (this IServiceCollection services)
         {
             services.AddScoped<IAccountService, AccountService>( );

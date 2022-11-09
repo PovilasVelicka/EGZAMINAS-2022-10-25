@@ -81,6 +81,17 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
                 (int)HttpStatusCode.Created);
         }
 
+        public async Task<IServiceResponseDto<string>> DeleteAccountAsync (Guid adminGuid, Guid userGuid)
+        {
+            if (!await IsUserAdmin(adminGuid)) return new ServiceResponseDto<string>("You do not have permission to delete a user");
+
+            if (adminGuid == userGuid) return new ServiceResponseDto<string>("You do not have rights to delete your own account");
+
+            await _accountsRepository.DeleteAsync(userGuid);
+
+            return new ServiceResponseDto<string>("Account successfully deleted", true);
+        }
+
         public async Task<IServiceResponseDto<Account>> GetUserInfoAsync (Guid userGuid)
         {
             var account = await _accountsRepository.GetAsync(userGuid);
@@ -95,17 +106,6 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             var accounts = await _accountsRepository.GetAllAsync(searchSubstring);
 
             return new ServiceResponseDto<List<Account>>(accounts);
-        }
-
-        public async Task<IServiceResponseDto<string>> DeleteAccountAsync (Guid adminGuid, Guid userGuid)
-        {
-            if (!await IsUserAdmin(adminGuid)) return new ServiceResponseDto<string>("You do not have permission to delete a user");
-
-            if (adminGuid == userGuid) return new ServiceResponseDto<string>("You do not have rights to delete your own account");
-
-            await _accountsRepository.DeleteAsync(userGuid);
-
-            return new ServiceResponseDto<string>("Account successfully deleted", true);
         }
 
         public async Task<IServiceResponseDto<Account>> UpdateUserInfoAsync (Guid userGuid, IUserInfoDto userInfo)
