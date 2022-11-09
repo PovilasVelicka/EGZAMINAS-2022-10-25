@@ -1,30 +1,35 @@
-﻿using Microsoft.Extensions.Logging;
-using RegistrationSystem.BusinessLogic.DTOs;
+﻿using RegistrationSystem.BusinessLogic.DTOs;
 using RegistrationSystem.BusinessLogic.Services.AuthServices;
 using RegistrationSystem.Common.Interfaces.AccessData;
 using RegistrationSystem.Entities.Enums;
 using RegistrationSystem.Entities.Models;
+using RegistrationSystem.Entities.Models.AccountProperties;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Net;
+using System.Runtime.Versioning;
 using Utilites.Exstensions;
 
 namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 {
+    [SupportedOSPlatform("windows")]
     internal class AccountService : IAccountService
     {
         private readonly IAccountsRepository _accountsRepository;
         private readonly IAddressesRepository _addressesRepository;
         private readonly IJwtService _jwtService;
-        private readonly ILogger<AccountService> _logger;
+        private readonly IUserInfoRepository _propertiesRepository;
+
         public AccountService (
             IAccountsRepository accountRepository,
             IAddressesRepository addressesRepository,
-            IJwtService jwtService,
-            ILogger<AccountService> logger)
+            IUserInfoRepository propertiesRepository,
+            IJwtService jwtService)
         {
-            _accountsRepository = accountRepository;
             _addressesRepository = addressesRepository;
+            _accountsRepository = accountRepository;
+            _propertiesRepository = propertiesRepository;
             _jwtService = jwtService;
-            _logger = logger;
         }
 
         public async Task<IServiceResponseDto<string>> LoginAsync (string loginName, string password)
@@ -50,7 +55,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             {
                 return new ServiceResponseDto<string>(
                     null,
-                    "User name already exists",
+                    "Username already exists",
                     (int)HttpStatusCode.Conflict);
             }
 
@@ -58,7 +63,7 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
             {
                 return new ServiceResponseDto<string>(
                     null,
-                    "All fields are required to create user",
+                    "All fields are required to create a user",
                     (int)HttpStatusCode.BadRequest);
             }
 
@@ -66,35 +71,25 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
             var account = CreateAccount(loginName, password, adminCount == 0 ? UserRole.Admin : UserRole.User);
 
-            await MapUserInfo(account, userInfo);
+            await MapAccountFromUserInfoDtoAsync(account, userInfo);
 
-            try
-            {
-                await _accountsRepository.AddAsync(account);
-            }
-            catch (Exception e)
-            {
-                string errMessage = $"Can't create user with: " +
-                    $"\n\tlogin-name: {loginName}" +
-                    $"\n\terror: {e.Message} {e.InnerException}";
-                _logger.LogError(message: errMessage);
-
-                return new ServiceResponseDto<string>(
-                    null,
-                    e.InnerException?.Message ?? "Unexpected error",
-                    (int)HttpStatusCode.ServiceUnavailable);
-            }
-
-            _logger.Log(
-               LogLevel.Information,
-               $"New user created: " +
-               $"\n\tId: {account.Id}" +
-               $"\n\tName: {account.LoginName}");
+            await _accountsRepository.AddAsync(account);
 
             return new ServiceResponseDto<string>(
                 _jwtService.GetJwtToken(account),
-                "Account created successfuly",
+                "Account created successfully",
                 (int)HttpStatusCode.Created);
+        }
+
+        public async Task<IServiceResponseDto<string>> DeleteAccountAsync (Guid adminGuid, Guid userGuid)
+        {
+            if (!await IsUserAdmin(adminGuid)) return new ServiceResponseDto<string>("You do not have permission to delete a user");
+
+            if (adminGuid == userGuid) return new ServiceResponseDto<string>("You do not have rights to delete your own account");
+
+            await _accountsRepository.DeleteAsync(userGuid);
+
+            return new ServiceResponseDto<string>("Account successfully deleted", true);
         }
 
         public async Task<IServiceResponseDto<Account>> GetUserInfoAsync (Guid userGuid)
@@ -106,72 +101,119 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
         public async Task<IServiceResponseDto<List<Account>>> GetUsersAsync (Guid adminGuid, string searchSubstring)
         {
+            if (!await IsUserAdmin(adminGuid)) return new ServiceResponseDto<List<Account>>("You do not have permission to view users");
+
             var accounts = await _accountsRepository.GetAllAsync(searchSubstring);
 
             return new ServiceResponseDto<List<Account>>(accounts);
         }
 
-        public async Task<IServiceResponseDto<string>> DeleteAccountAsync (Guid adminGuid, Guid userGuid)
-        {
-            var account = await _accountsRepository.GetAsync(adminGuid);
-
-            if (account.Role != UserRole.Admin)
-            {
-                return new ServiceResponseDto<string>("You do not have permissions to delete user");
-            }
-
-            if (await _accountsRepository.DeleteAsync(userGuid))
-            {
-                return new ServiceResponseDto<string>(true, "Account deleted successfuly");
-            }
-            else
-            {
-                return new ServiceResponseDto<string>(false, "Account not find");
-            }
-        }
-
         public async Task<IServiceResponseDto<Account>> UpdateUserInfoAsync (Guid userGuid, IUserInfoDto userInfo)
         {
-
             var account = await _accountsRepository.GetAsync(userGuid);
 
-            await MapUserInfo(account, userInfo);
+            if (account == null) return new ServiceResponseDto<Account>("User is not found");
+
+            await MapAccountFromUserInfoDtoAsync(account, userInfo);
+
+            await _accountsRepository.UpdateAsync(account);
 
             return new ServiceResponseDto<Account>(account);
         }
 
-        private async Task MapUserInfo (Account account, IUserInfoDto userInfo)
+        private async Task MapAccountFromUserInfoDtoAsync (Account account, IUserInfoDto userInfoDto)
         {
-            if (!string.IsNullOrWhiteSpace(userInfo.Phone)) account.UserInfo.Phone = userInfo.Phone;
-            if (!string.IsNullOrWhiteSpace(userInfo.Email)) account.UserInfo.Email = userInfo.Email;
-            if (!string.IsNullOrWhiteSpace(userInfo.LastName)) account.UserInfo.LastName = userInfo.LastName;
-            if (!string.IsNullOrWhiteSpace(userInfo.FirstName)) account.UserInfo.FirstName = userInfo.FirstName;
-            if (!string.IsNullOrWhiteSpace(userInfo.PersonalCode)) account.UserInfo.PersonalCode = userInfo.PersonalCode;
-            if (userInfo.Photo != null) account.UserInfo.Photo = userInfo.Photo;
+            await MapAccountUserInfoAsync(account, userInfoDto);
+            await MapAccountAddressAsync(account, userInfoDto);
+        }
 
-            var city = string.IsNullOrWhiteSpace(userInfo.City) ? account.UserInfo.Address.City : userInfo.City;
-            var street = string.IsNullOrWhiteSpace(userInfo.Street) ? account.UserInfo.Address.Street : userInfo.Street;
-            var houseNumber = string.IsNullOrWhiteSpace(userInfo.HouseNumber) ? account.UserInfo.Address.HouseNumber : userInfo.HouseNumber;
-            var appartmentNumber = string.IsNullOrWhiteSpace(userInfo.AppartmentNumber) ? account.UserInfo.Address.AppartmentNumber : userInfo.AppartmentNumber;
-
-
-            var existsAddres = await _addressesRepository.FindAddressAsync(
-                city,
-                street,
-                houseNumber,
-                appartmentNumber);
-
-            if (existsAddres != null)
+        private async Task MapAccountUserInfoAsync (Account account, IUserInfoDto userInfo)
+        {
+            if (userInfo.Phone != null)
             {
-                account.UserInfo.Address = existsAddres;
+                account.UserInfo.Phone =
+                    await _propertiesRepository.GetPhoneAsync(userInfo.Phone) ??
+                    new Phone { Value = userInfo.Phone };
+            };
+
+            if (userInfo.PersonalCode != null)
+            {
+                account.UserInfo.PersonalCode =
+                    await _propertiesRepository.GetPersonalCodeAsync(userInfo.PersonalCode) ??
+                    new PersonalCode { Value = userInfo.PersonalCode };
             }
-            else
+
+            if (userInfo.Email != null)
             {
-                account.UserInfo.Address = new( );
-                account.UserInfo.Address.City = city;
-                account.UserInfo.Address.Street = street;
-                account.UserInfo.Address.HouseNumber = houseNumber;
-                account.UserInfo.Address.AppartmentNumber = appartmentNumber;
+                account.UserInfo.Email =
+                    await _propertiesRepository.GetEmailAsync(userInfo.Email) ??
+                    new Email { Value = userInfo.Email };
+            }
+
+            if (userInfo.LastName != null)
+            {
+                account.UserInfo.LastName =
+                    await _propertiesRepository.GetLastNameAsync(userInfo.LastName) ??
+                    new LastName { Value = userInfo.LastName };
+            }
+
+            if (userInfo.FirstName != null)
+            {
+                account.UserInfo.FirstName =
+                    await _propertiesRepository.GetFirstNameAsync(userInfo.FirstName) ??
+                    new FirstName { Value = userInfo.FirstName };
+            }
+
+            if (userInfo.ProfilePicture != null) account.UserInfo.ProfilePicture =
+                    ResizeImage(userInfo.ProfilePicture, userInfo.ContentType!, 200, 200);
+        }
+
+        private async Task MapAccountAddressAsync (Account account, IUserInfoDto userInfo)
+        {
+            if (userInfo.City != null || userInfo.Street != null || userInfo.HouseNumber != null || userInfo.AppartmentNumber != null)
+            {
+                City city;
+                Street street;
+                HouseNumber houseNumber;
+                AppartmentNumber appartmentNumber;
+
+                if (userInfo.City != null)
+                    city = await _addressesRepository.GetCityAsync(userInfo.City) ?? new City { Value = userInfo.City };
+                else
+                    city = account.UserInfo.Address.City;
+
+
+                if (userInfo.Street != null)
+                    street = await _addressesRepository.GetStreetAsync(userInfo.Street) ?? new Street { Value = userInfo.Street };
+                else
+                    street = account.UserInfo.Address.Street;
+
+
+                if (userInfo.HouseNumber != null)
+                    houseNumber = await _addressesRepository.GetHouseNumberAsync(userInfo.HouseNumber) ?? new HouseNumber { Value = userInfo.HouseNumber };
+                else
+                    houseNumber = account.UserInfo.Address.HouseNumber;
+
+
+                if (userInfo.AppartmentNumber != null)
+                    appartmentNumber = await _addressesRepository.GetAppartmentNumberAsync(userInfo.AppartmentNumber) ?? new AppartmentNumber { Value = userInfo.AppartmentNumber };
+                else
+                    appartmentNumber = account.UserInfo.Address.AppartmentNumber;
+
+
+                account.UserInfo.Address =
+                    await _addressesRepository.GetAddressAsync(
+                        city: city.Value,
+                        street: street.Value,
+                        houseNumber: houseNumber.Value,
+                        appartmentNumber: appartmentNumber.Value)
+                    ?? new Address
+                    {
+                        City = city,
+                        Street = street,
+                        HouseNumber = houseNumber,
+                        AppartmentNumber = appartmentNumber
+                    };
             }
         }
 
@@ -181,7 +223,6 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
 
             return new Account
             {
-                Id = Guid.NewGuid( ),
                 LoginName = loginName,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
@@ -189,10 +230,35 @@ namespace RegistrationSystem.BusinessLogic.Services.AccountServices
                 UserInfo = new( )
                 {
                     Address = new( )
-                },
+                }
             };
         }
 
+        private async Task<bool> IsUserAdmin (Guid adminGuid)
+        {
+            var account = await _accountsRepository.GetAsync(adminGuid);
+            if (account == null || account.Role == UserRole.Admin) return true;
+            return false;
+        }
 
+        private static byte[ ] ResizeImage (byte[ ] imageBytes, string contentType, int width, int height)
+        {
+            using MemoryStream ms = new( );
+            using var img = Image.FromStream(new MemoryStream(imageBytes));
+            var thumbnail = img.GetThumbnailImage(width, height, null, new IntPtr( ));
+            thumbnail.Save(ms, GetImageFormat(contentType));
+            return ms.ToArray( );
+        }
+
+        private static ImageFormat GetImageFormat (string contentType)
+        {
+            return contentType switch
+            {
+                "image/jpeg" => ImageFormat.Jpeg,
+                "image/png" => ImageFormat.Png,
+                "image/gif" => ImageFormat.Gif,
+                _ => ImageFormat.Jpeg,
+            };
+        }
     }
 }

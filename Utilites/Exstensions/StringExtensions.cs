@@ -7,7 +7,9 @@ namespace Utilites.Exstensions
 {
     public static class StringExtensions
     {
-        public static bool IsValidEmail (this string email, out string localPart, out string domain)
+        public static bool IsValidEmail (
+            this string email,
+            out string localPart, out string domain)
         {
             if (email.IsValidEmail( ))
             {
@@ -91,6 +93,5 @@ namespace Utilites.Exstensions
                 sha1.ComputeHash(data)
                 .Select(x => x.ToString("X2")));
         }
-
     }
 }

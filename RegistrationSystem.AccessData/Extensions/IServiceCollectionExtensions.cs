@@ -8,13 +8,15 @@ namespace RegistrationSystem.AccessData.Extensions
 {
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddDatabase (this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddDatabase (
+            this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("RegistrationSystemDb")));
 
             services.AddScoped<IAccountsRepository, AccountsRepository>( );
             services.AddScoped<IAddressesRepository, AddressesRepository>( );
+            services.AddScoped<IUserInfoRepository, UserInfoRepository>( );
 
             return services;
         }
