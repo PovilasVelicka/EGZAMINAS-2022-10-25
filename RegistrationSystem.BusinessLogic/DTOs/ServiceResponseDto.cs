@@ -1,10 +1,13 @@
-﻿namespace RegistrationSystem.BusinessLogic.DTOs
+﻿using System.Runtime.CompilerServices;
+[assembly: InternalsVisibleTo("RegistrationSystemTests")]
+
+namespace RegistrationSystem.BusinessLogic.DTOs
 {
     internal class ServiceResponseDto<T> : IServiceResponseDto<T>
     {
 
         public bool IsSuccess { get; }
-        public int StatuCode { get; }
+        public int StatusCode { get; }
         public string Message { get; }
         public T? Object { get; }
 
@@ -12,14 +15,14 @@
         {
             IsSuccess = false;
             Message = errorMessage;
-            StatuCode = 400;
+            StatusCode = 400;
         }
 
-        public ServiceResponseDto (bool isSuccess, string message)
+        public ServiceResponseDto (string message, bool isSuccess)
         {
             IsSuccess = isSuccess;
             Message = message;
-            StatuCode = isSuccess ? 200 : 400;
+            StatusCode = isSuccess ? 200 : 400;
         }
 
         public ServiceResponseDto (T? obj)
@@ -27,7 +30,7 @@
             IsSuccess = obj != null;
             Message = IsSuccess ? "" : "Not found";
             Object = obj;
-            StatuCode = IsSuccess ? 200 : 404;
+            StatusCode = IsSuccess ? 200 : 404;
         }
 
         public ServiceResponseDto (T? obj, string message, int statusCode)
@@ -35,7 +38,7 @@
             IsSuccess = obj != null;
             Message = message;
             Object = obj;
-            StatuCode = statusCode;
+            StatusCode = statusCode;
         }
 
     }
