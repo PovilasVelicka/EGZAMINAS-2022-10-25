@@ -4,7 +4,7 @@
 
 namespace RegistrationSystem.AccessData.Migrations
 {
-    public partial class changeuserinfonullableproperty : Migration
+    public partial class newdbinit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -12,8 +12,8 @@ using RegistrationSystem.AccessData;
 namespace RegistrationSystem.AccessData.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221025173525_db-init")]
-    partial class dbinit
+    [Migration("20221027164156_delete-userInfoId")]
+    partial class deleteuserInfoId
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,32 +34,22 @@ namespace RegistrationSystem.AccessData.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<byte[]>("Password")
+                    b.Property<byte[]>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(460)
                         .HasColumnType("varbinary(460)");
 
-                    b.Property<byte[]>("Photo")
+                    b.Property<byte[]>("PasswordSalt")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
+                        .HasMaxLength(460)
+                        .HasColumnType("varbinary(460)");
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("Salt")
-                        .IsRequired()
-                        .HasMaxLength(460)
-                        .HasColumnType("varbinary(460)");
-
-                    b.Property<int?>("UserInfoId")
-                        .HasColumnType("int");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserInfoId")
-                        .IsUnique()
-                        .HasFilter("[UserInfoId] IS NOT NULL");
 
                     b.ToTable("Accounts", "RegistrationSystem");
                 });
@@ -105,6 +95,9 @@ namespace RegistrationSystem.AccessData.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("AddressId")
                         .HasColumnType("int");
 
@@ -133,42 +126,48 @@ namespace RegistrationSystem.AccessData.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<byte[]>("Photo")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("AccountId")
+                        .IsUnique();
 
                     b.HasIndex("AddressId");
 
                     b.ToTable("UserInfos", "RegistrationSystem");
                 });
 
-            modelBuilder.Entity("RegistrationSystem.Entities.Models.Account", b =>
-                {
-                    b.HasOne("RegistrationSystem.Entities.Models.UserInfo", "UserInfo")
-                        .WithOne("Account")
-                        .HasForeignKey("RegistrationSystem.Entities.Models.Account", "UserInfoId");
-
-                    b.Navigation("UserInfo");
-                });
-
             modelBuilder.Entity("RegistrationSystem.Entities.Models.UserInfo", b =>
                 {
+                    b.HasOne("RegistrationSystem.Entities.Models.Account", "Account")
+                        .WithOne("UserInfo")
+                        .HasForeignKey("RegistrationSystem.Entities.Models.UserInfo", "AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("RegistrationSystem.Entities.Models.Address", "Address")
                         .WithMany("UserInfos")
                         .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Account");
+
                     b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("RegistrationSystem.Entities.Models.Account", b =>
+                {
+                    b.Navigation("UserInfo")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("RegistrationSystem.Entities.Models.Address", b =>
                 {
                     b.Navigation("UserInfos");
-                });
-
-            modelBuilder.Entity("RegistrationSystem.Entities.Models.UserInfo", b =>
-                {
-                    b.Navigation("Account")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

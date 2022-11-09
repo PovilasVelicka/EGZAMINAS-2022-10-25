@@ -2,6 +2,8 @@
 using RegistrationSystem.Common.Interfaces.AccessData;
 using RegistrationSystem.Entities.Enums;
 using RegistrationSystem.Entities.Models;
+using System.Runtime.CompilerServices;
+[assembly: InternalsVisibleTo("RegistrationSystemTests")]
 
 namespace RegistrationSystem.AccessData.Repositories
 {
@@ -16,6 +18,8 @@ namespace RegistrationSystem.AccessData.Repositories
 
         public async Task<Guid> AddAsync (Account account)
         {
+            if (account.Id != Guid.Empty) throw new KeyNotFoundException("To add account id must by Guid.Empty");
+            account.Id = Guid.NewGuid( );
             await _context.Accounts.AddAsync(account);
             await _context.SaveChangesAsync( );
             return account.Id;
@@ -26,13 +30,11 @@ namespace RegistrationSystem.AccessData.Repositories
             return await _context.Accounts.CountAsync(a => a.Role == role);
         }
 
-        public async Task<bool> DeleteAsync (Guid id)
+        public async Task DeleteAsync (Guid id)
         {
             var account = await GetAsync(id);
-            if (account == null) return false;
             _context.Accounts.Remove(account);
             await _context.SaveChangesAsync( );
-            return true;
         }
 
         public async Task<List<Account>> GetAllAsync ( )
@@ -52,20 +54,14 @@ namespace RegistrationSystem.AccessData.Repositories
                 .ToListAsync( );
         }
 
-        public async Task<Account> GetAsync (Guid id)
+        public async Task<Account> GetAsync (Guid userGuid)
         {
-            return await AccountsQuery( ).SingleAsync(a => a.Id.Equals(id));
+            return await AccountsQuery( ).SingleAsync(a => a.Id.Equals(userGuid));
         }
 
         public async Task<Account?> GetByLoginAsync (string userLogin)
         {
             var account = await AccountsQuery( ).SingleOrDefaultAsync(a => a.LoginName == userLogin);
-            return account;
-        }
-
-        public async Task<Account> GetByUserIdAsync (int id)
-        {
-            var account = await AccountsQuery( ).SingleAsync(u => u.UserInfoId == id);
             return account;
         }
 

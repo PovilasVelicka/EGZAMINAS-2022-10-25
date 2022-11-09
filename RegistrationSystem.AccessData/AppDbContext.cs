@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RegistrationSystem.Entities.Enums;
 using RegistrationSystem.Entities.Models;
-
+using System.Runtime.CompilerServices;
+[assembly: InternalsVisibleTo("RegistrationSystemTests")]
 namespace RegistrationSystem.AccessData
 {
+
     internal class AppDbContext : DbContext
     {
         public DbSet<Account> Accounts { get; set; } = null!;
@@ -22,6 +24,13 @@ namespace RegistrationSystem.AccessData
                     .HasConversion(
                 u => u.ToString( ),
                 d => (UserRole)Enum.Parse(typeof(UserRole), d));
+            });
+
+            modelBuilder.Entity<Address>(entity =>
+            {
+                entity.HasMany(u => u.UserInfos)
+                .WithOne(u => u.Address)
+                .OnDelete(DeleteBehavior.NoAction);
             });
         }
     }
